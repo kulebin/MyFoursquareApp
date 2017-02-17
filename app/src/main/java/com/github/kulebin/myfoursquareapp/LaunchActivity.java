@@ -9,8 +9,16 @@ public class LaunchActivity extends AppCompatActivity {
 
     private static final int SPLASH_SHOW_TIME = 1000;
 
-    private Runnable mRunnable;
     private Handler mHandler;
+    private final Runnable mRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            final Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -18,7 +26,6 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
 
         mHandler = new Handler();
-        initRunnable();
     }
 
     @Override
@@ -31,17 +38,5 @@ public class LaunchActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mRunnable);
-    }
-
-    private void initRunnable() {
-        mRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                final Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        };
     }
 }
