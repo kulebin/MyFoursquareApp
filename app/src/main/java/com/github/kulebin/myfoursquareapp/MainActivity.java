@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IView {
 
-    VenueListPresenter mListPresenter = new VenueListPresenter();
+    private final VenueListPresenter mListPresenter = new VenueListPresenter(this);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -21,6 +23,17 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.venueRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new VenueListAdapter(mListPresenter));
+        recyclerView.setAdapter(mListPresenter.getVenueListAdapter());
+    }
+
+    @Override
+    public void showProgress(final boolean isVisible) {
+        findViewById(R.id.progress).setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showError(final String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
     }
 }

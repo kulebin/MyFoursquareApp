@@ -1,10 +1,10 @@
 package com.github.kulebin.myfoursquareapp;
 
-import java.util.List;
+import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
 
 public interface EntityGateway {
 
-    List<Venue> fetchVenueList();
+    void fetchVenueList(OnResultCallback pOnResultCallback);
 
     final class Impl {
 

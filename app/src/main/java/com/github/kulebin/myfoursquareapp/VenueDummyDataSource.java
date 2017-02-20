@@ -1,12 +1,33 @@
 package com.github.kulebin.myfoursquareapp;
 
+import com.github.kulebin.myfoursquareapp.thread.ITask;
+import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
+import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
+import com.github.kulebin.myfoursquareapp.thread.ProgressCallback;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class VenueDummyDataSource implements EntityGateway {
 
     @Override
-    public List<Venue> fetchVenueList() {
+    public void fetchVenueList(final OnResultCallback pOnResultCallback) {
+        ((IThreadManager) ContextHolder.get().getSystemService(IThreadManager.APP_SERVICE_KEY)).execute(
+                new ITask<Void, Void, List<Venue>>() {
+
+                    @Override
+                    public List<Venue> perform(Void pVoid, ProgressCallback<Void> progressCallback) throws Exception {
+                        //Long operation imitation
+                        TimeUnit.SECONDS.sleep(2);
+                        return initVenueList();
+                    }
+                },
+                null,
+                pOnResultCallback);
+    }
+
+    private List<Venue> initVenueList() {
         final List<Venue> venueList = new ArrayList<>();
         venueList.add(new Venue("4347394793479", "place 1", "some location", "contacts", 5.6F, null));
         venueList.add(new Venue("43erojodfjjd", "place 2", "some location2", "contacts2", 6.6F, null));

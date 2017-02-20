@@ -12,4 +12,8 @@ public interface VenueListPresentation {
 
     void onViewCreated();
 
+    void onError(Exception e);
+
+    void setProgress(boolean isVisible);
+
 }
