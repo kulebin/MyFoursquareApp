@@ -1,4 +1,11 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.presenter;
+
+import com.github.kulebin.myfoursquareapp.dataSource.EntityGateway;
+import com.github.kulebin.myfoursquareapp.common.IView;
+import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
+import com.github.kulebin.myfoursquareapp.view.VenueItemView;
+import com.github.kulebin.myfoursquareapp.adapter.VenueListAdapter;
+import com.github.kulebin.myfoursquareapp.useCase.ShowVenueListUseCase;
 
 import java.util.List;
 

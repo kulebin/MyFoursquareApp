@@ -1,4 +1,6 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.view;
+
+import com.github.kulebin.myfoursquareapp.model.Venue;
 
 public class VenueDisplayData {
 

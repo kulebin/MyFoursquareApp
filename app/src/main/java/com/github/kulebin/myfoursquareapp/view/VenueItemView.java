@@ -1,4 +1,4 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.view;
 
 public interface VenueItemView {
 

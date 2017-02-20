@@ -1,5 +1,7 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.dataSource;
 
+import com.github.kulebin.myfoursquareapp.app.ContextHolder;
+import com.github.kulebin.myfoursquareapp.model.Venue;
 import com.github.kulebin.myfoursquareapp.thread.ITask;
 import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
 import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;

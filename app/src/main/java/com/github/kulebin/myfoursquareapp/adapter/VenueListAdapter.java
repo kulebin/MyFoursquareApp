@@ -1,10 +1,14 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.github.kulebin.myfoursquareapp.R;
+import com.github.kulebin.myfoursquareapp.view.VenueItemView;
+import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 

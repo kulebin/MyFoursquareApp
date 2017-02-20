@@ -1,4 +1,4 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.dataSource;
 
 import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
 
