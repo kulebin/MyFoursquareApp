@@ -46,7 +46,6 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
         @Override
         public void displayName(final String name) {
             nameView.setText(name);
-
         }
 
         @Override
@@ -61,7 +60,7 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
-
+            //todo load and show image
         }
     }
 
