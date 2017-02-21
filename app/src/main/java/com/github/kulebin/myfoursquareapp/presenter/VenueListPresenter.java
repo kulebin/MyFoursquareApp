@@ -1,7 +1,7 @@
 package com.github.kulebin.myfoursquareapp.presenter;
 
 import com.github.kulebin.myfoursquareapp.dataSource.EntityGateway;
-import com.github.kulebin.myfoursquareapp.common.IView;
+import com.github.kulebin.myfoursquareapp.view.IViewCallback;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 import com.github.kulebin.myfoursquareapp.adapter.VenueListAdapter;
@@ -12,11 +12,11 @@ import java.util.List;
 public class VenueListPresenter implements VenueListPresentation {
 
     private List<VenueDisplayData> mVenueDisplayList;
-    private IView mView;
+    private IViewCallback mView;
     private final VenueListAdapter mVenueListAdapter = new VenueListAdapter(this);
 
-    public VenueListPresenter(final IView pIView) {
-        this.mView = pIView;
+    public VenueListPresenter(final IViewCallback pIViewCallback) {
+        this.mView = pIViewCallback;
     }
 
     @Override

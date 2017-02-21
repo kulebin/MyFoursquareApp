@@ -9,7 +9,7 @@ public interface EntityGateway {
     final class Impl {
 
         public static EntityGateway newInstance() {
-            return new VenueDummyDataSource();
+            return new FoursquareDataSource();
         }
     }
 

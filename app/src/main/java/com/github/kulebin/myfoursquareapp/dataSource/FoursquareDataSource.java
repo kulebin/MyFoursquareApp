@@ -1,6 +1,5 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
-import com.github.kulebin.myfoursquareapp.app.ContextHolder;
 import com.github.kulebin.myfoursquareapp.model.Venue;
 import com.github.kulebin.myfoursquareapp.thread.ITask;
 import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
@@ -11,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class VenueDummyDataSource implements EntityGateway {
+public class FoursquareDataSource implements EntityGateway {
 
     @Override
     public void fetchVenueList(final OnResultCallback pOnResultCallback) {
-        ((IThreadManager) ContextHolder.get().getSystemService(IThreadManager.APP_SERVICE_KEY)).execute(
+        IThreadManager.Impl.get().execute(
                 new ITask<Void, Void, List<Venue>>() {
 
                     @Override

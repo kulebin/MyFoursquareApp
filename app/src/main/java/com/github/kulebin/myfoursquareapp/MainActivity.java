@@ -7,10 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.kulebin.myfoursquareapp.common.IView;
+import com.github.kulebin.myfoursquareapp.view.IViewCallback;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 
-public class MainActivity extends AppCompatActivity implements IView {
+public class MainActivity extends AppCompatActivity implements IViewCallback {
 
     private final VenueListPresenter mListPresenter = new VenueListPresenter(this);
 

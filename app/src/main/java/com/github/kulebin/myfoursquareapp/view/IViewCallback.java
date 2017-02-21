@@ -1,6 +1,6 @@
-package com.github.kulebin.myfoursquareapp.common;
+package com.github.kulebin.myfoursquareapp.view;
 
-public interface IView {
+public interface IViewCallback {
 
     void showProgress(boolean isVisible);
 
