@@ -17,8 +17,28 @@ class HttpClient implements IHttpClient {
     private static final int READ_TIMEOUT = 5000;
     private static final int CONNECTION_TIMEOUT = 8000;
 
+    @Override
     public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
+        execute(pHttpRequest.getUrl(),
+                pHttpRequest.getRequestType(),
+                pHttpRequest.getHeaders(),
+                pHttpRequest.getBody(),
+                pIOnResult);
+    }
 
+    @Override
+    public void doRequest(final String pUrl, final IOnResult pIOnResult) {
+        execute(pUrl, HttpRequestType.GET, null, null, pIOnResult);
+    }
+
+    private void applyBody(final HttpURLConnection httpURLConnection, final String body) throws IOException {
+        final byte[] outputInBytes = body.getBytes("UTF-8");
+        final OutputStream os = httpURLConnection.getOutputStream();
+        os.write(outputInBytes);
+        os.close();
+    }
+
+    private void execute(final String pUrl, final HttpRequestType pRequestType, final Map<String, String> pHeaders, final String pBody, final IOnResult pIOnResult) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
         IOException exception = null;
@@ -27,19 +47,18 @@ class HttpClient implements IHttpClient {
         boolean isSuccess;
 
         try {
-            final URL reqUrl = new URL(pHttpRequest.getUrl());
+            final URL reqUrl = new URL(pUrl);
             connection = ((HttpURLConnection) reqUrl.openConnection());
-            connection.setRequestMethod(pHttpRequest.getRequestType().name());
+            connection.setRequestMethod(pRequestType.name());
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
-            final Map<String, String> headers = pHttpRequest.getHeaders();
-            if (headers != null) {
-                for (final String key : pHttpRequest.getHeaders().keySet()) {
-                    connection.addRequestProperty(key, headers.get(key));
+            if (pHeaders != null) {
+                for (final String key : pHeaders.keySet()) {
+                    connection.addRequestProperty(key, pHeaders.get(key));
                 }
             }
-            if (pHttpRequest.getBody() != null) {
-                applyBody(connection, pHttpRequest.getBody());
+            if (pBody != null) {
+                applyBody(connection, pBody);
             }
 
             final InputStream inputStream;
@@ -81,16 +100,15 @@ class HttpClient implements IHttpClient {
         if (isSuccess) {
             pIOnResult.onSuccess(response);
         } else if (exception == null) {
-            pIOnResult.onError(new HttpRequestException(responseCode, response, pHttpRequest, pIOnResult));
+            final HttpRequest httpRequest = new HttpRequest.Builder()
+                    .setRequestType(pRequestType)
+                    .setUrl(pUrl)
+                    .setHeaders(pHeaders)
+                    .setBody(pBody)
+                    .build();
+            pIOnResult.onError(new HttpRequestException(responseCode, response, httpRequest, pIOnResult));
         } else {
             pIOnResult.onError(exception);
         }
-    }
-
-    private void applyBody(final HttpURLConnection httpURLConnection, final String body) throws IOException {
-        final byte[] outputInBytes = body.getBytes("UTF-8");
-        final OutputStream os = httpURLConnection.getOutputStream();
-        os.write(outputInBytes);
-        os.close();
     }
 }

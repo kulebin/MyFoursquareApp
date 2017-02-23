@@ -18,6 +18,8 @@ public interface IHttpClient {
 
     void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult);
 
+    void doRequest(String pUrl, IOnResult pIOnResult);
+
     final class Impl {
 
         public static IHttpClient get() {
