@@ -1,8 +1,13 @@
 package com.github.kulebin.myfoursquareapp.http;
 
+import com.github.kulebin.myfoursquareapp.app.App;
+import com.github.kulebin.myfoursquareapp.app.ContextHolder;
+
 import java.io.IOException;
 
 public interface IHttpClient {
+
+    String APP_SERVICE_KEY = "httpClient";
 
     interface IOnResult {
 
@@ -14,6 +19,10 @@ public interface IHttpClient {
     void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult);
 
     final class Impl {
+
+        public static IHttpClient get() {
+            return App.get(ContextHolder.get(), APP_SERVICE_KEY);
+        }
 
         public static IHttpClient newInstance() {
             return new HttpClient();
