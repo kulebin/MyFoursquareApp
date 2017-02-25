@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-            storeFile file(KeystorePath)
+            storeFile file('../debug.keystore')
             storePassword 'android'
         }
     }
