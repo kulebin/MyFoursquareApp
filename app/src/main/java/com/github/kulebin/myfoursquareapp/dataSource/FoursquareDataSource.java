@@ -1,31 +1,62 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
-import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.thread.ITask;
-import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
-import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
-import com.github.kulebin.myfoursquareapp.thread.ProgressCallback;
+import android.os.Handler;
 
+import com.github.kulebin.myfoursquareapp.api.Api;
+import com.github.kulebin.myfoursquareapp.http.IHttpClient;
+import com.github.kulebin.myfoursquareapp.model.Venue;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class FoursquareDataSource implements EntityGateway {
+class FoursquareDataSource implements IDataSource {
 
     @Override
-    public void fetchVenueList(final OnResultCallback pOnResultCallback) {
-        IThreadManager.Impl.get().execute(
-                new ITask<Void, Void, List<Venue>>() {
+    public <Result> void fetchData(final String pUrl, final IOnResultCallback<Result> pOnResultCallback) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                pOnResultCallback.onStart();
+                IHttpClient.Impl.get().doRequest(pUrl, new IHttpClient.IOnResult() {
 
                     @Override
-                    public List<Venue> perform(Void pVoid, ProgressCallback<Void> progressCallback) throws Exception {
-                        //Long operation imitation
-                        TimeUnit.SECONDS.sleep(2);
-                        return initVenueList();
+                    public void onSuccess(final String result) {
+                        final Result data = parseResponse(pUrl, result);
+
+                        handler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                pOnResultCallback.onSuccess(data);
+                            }
+                        });
                     }
-                },
-                null,
-                pOnResultCallback);
+
+                    @Override
+                    public void onError(final IOException e) {
+                        handler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                pOnResultCallback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private <T> T parseResponse(String pUrl, String pResponse) {
+        //todo parsing logic should be implemented here
+        if (Api.getVenuesTrendingUrl().equals(pUrl)) {
+            return (T) initVenueList();
+        } else {
+            return (T) new Venue("4347394793479", pResponse, "some location", "contacts", 5.6F, null);
+        }
     }
 
     private List<Venue> initVenueList() {

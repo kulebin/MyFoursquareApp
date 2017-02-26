@@ -1,28 +1,27 @@
 package com.github.kulebin.myfoursquareapp.useCase;
 
+import android.util.Log;
+
 import com.github.kulebin.myfoursquareapp.api.Api;
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.presenter.VenueListPresentation;
+import com.github.kulebin.myfoursquareapp.presenter.VenueDetailPresentation;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ShowVenueListUseCase {
+public class ShowDetailVenueUseCase {
 
     private final IDataSource mDataSource;
-    private final VenueListPresentation mPresenter;
+    private final VenueDetailPresentation mPresenter;
 
-    public ShowVenueListUseCase(final IDataSource pDataSource, final VenueListPresentation pPresenter) {
+    public ShowDetailVenueUseCase(final IDataSource pDataSource, final VenueDetailPresentation pPresenter) {
         mDataSource = pDataSource;
         mPresenter = pPresenter;
     }
 
-    public void showVenueList() {
+    public void showDetailVenue() {
 
-        mDataSource.fetchData(Api.getVenuesTrendingUrl(), new IOnResultCallback<List<Venue>>() {
+        mDataSource.fetchData(Api.getVenuesByIdUrl(mPresenter.getVenueId()), new IOnResultCallback<Venue>() {
 
             @Override
             public void onStart() {
@@ -30,16 +29,11 @@ public class ShowVenueListUseCase {
             }
 
             @Override
-            public void onSuccess(final List<Venue> pVenueList) {
+            public void onSuccess(final Venue venue) {
                 mPresenter.setProgress(false);
-                final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
-
-                for (final Venue venue : pVenueList) {
-                    venueToShowList.add(new VenueDisplayData(venue));
-                }
-
-                mPresenter.setProgress(false);
-                mPresenter.presentVenueToShowData(venueToShowList);
+                mPresenter.presentVenueToShowData(new VenueDisplayData(venue));
+                //todo should be deleted
+                Log.d("ShowDetailVenueUseCase", venue.getName());
             }
 
             @Override
@@ -49,4 +43,5 @@ public class ShowVenueListUseCase {
             }
         });
     }
+
 }

@@ -1,6 +1,7 @@
 package com.github.kulebin.myfoursquareapp.presenter;
 
-import com.github.kulebin.myfoursquareapp.dataSource.EntityGateway;
+import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
+import com.github.kulebin.myfoursquareapp.useCase.ShowDetailVenueUseCase;
 import com.github.kulebin.myfoursquareapp.view.IViewCallback;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
@@ -40,8 +41,32 @@ public class VenueListPresenter implements VenueListPresentation {
 
     @Override
     public void onViewCreated() {
-        final EntityGateway entityGateway = EntityGateway.Impl.newInstance();
-        new ShowVenueListUseCase(entityGateway, this).showVenueList();
+        final IDataSource dataSource = IDataSource.Impl.newInstance();
+        new ShowVenueListUseCase(dataSource, this).showVenueList();
+
+        //todo just to check, should be deleted in the future
+        new ShowDetailVenueUseCase(dataSource, new VenueDetailPresentation() {
+
+            @Override
+            public void presentVenueToShowData(VenueDisplayData venueToShowData) {
+
+            }
+
+            @Override
+            public String getVenueId() {
+                return "4fe17dfbe4b0bd44616280d7";
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void setProgress(boolean isVisible) {
+
+            }
+        }).showDetailVenue();
     }
 
     @Override
