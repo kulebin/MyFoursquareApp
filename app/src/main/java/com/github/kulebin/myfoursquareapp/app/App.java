@@ -34,14 +34,32 @@ public class App extends Application {
         if (pContext == null || pServiceKey == null) {
             throw new IllegalArgumentException();
         }
+
         T systemService = (T) pContext.getSystemService(pServiceKey);
+
         if (systemService == null) {
             pContext = pContext.getApplicationContext();
             systemService = (T) pContext.getSystemService(pServiceKey);
         }
+
         if (systemService == null) {
             throw new IllegalStateException(pServiceKey + " not available");
         }
+
+        return systemService;
+    }
+
+    public static <T> T get(final String pServiceKey) {
+        if (pServiceKey == null) {
+            throw new IllegalArgumentException();
+        }
+
+        T systemService = (T) ContextHolder.get().getSystemService(pServiceKey);
+
+        if (systemService == null) {
+            throw new IllegalStateException(pServiceKey + " not available");
+        }
+
         return systemService;
     }
 

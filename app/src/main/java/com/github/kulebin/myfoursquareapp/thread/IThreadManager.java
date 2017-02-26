@@ -1,7 +1,6 @@
 package com.github.kulebin.myfoursquareapp.thread;
 
 import com.github.kulebin.myfoursquareapp.app.App;
-import com.github.kulebin.myfoursquareapp.app.ContextHolder;
 
 public interface IThreadManager {
 
@@ -12,7 +11,7 @@ public interface IThreadManager {
     final class Impl {
 
         public static IThreadManager get() {
-            return App.get(ContextHolder.get(), APP_SERVICE_KEY);
+            return App.get(APP_SERVICE_KEY);
         }
 
         public static IThreadManager newInstance() {
