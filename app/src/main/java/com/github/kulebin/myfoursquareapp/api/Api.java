@@ -22,17 +22,16 @@ public final class Api {
     private static final String VALUE_DATE_VERIFIED = "20170226"; /*Date value format: YYYYMMDD */
     private static final String VALUE_LATITUDE_AND_LONGITUDE_MINSK = "53.9,27.56667";
 
-    private static Uri.Builder getVenuesUri() {
-        return Uri.parse(Api.BASE_URL)
-                .buildUpon()
-                .appendPath(PATH_VENUES)
-                .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
-                .appendQueryParameter(PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)
-                .appendQueryParameter(PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET);
-    }
+    private static final Uri VENUE_BASE_URI = Uri.parse(Api.BASE_URL)
+            .buildUpon()
+            .appendPath(PATH_VENUES)
+            .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
+            .appendQueryParameter(PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)
+            .appendQueryParameter(PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET)
+            .build();
 
     public static String getVenuesTrendingUrl() {
-        return getVenuesUri()
+        return VENUE_BASE_URI.buildUpon()
                 .appendPath(PATH_TRENDING)
                 .appendQueryParameter(PARAM_LATITUDE_AND_LONGITUDE, VALUE_LATITUDE_AND_LONGITUDE_MINSK)
                 .build()
@@ -40,7 +39,7 @@ public final class Api {
     }
 
     public static String getVenuesByIdUrl(final String pId) {
-        return getVenuesUri()
+        return VENUE_BASE_URI.buildUpon()
                 .appendPath(pId)
                 .build()
                 .toString();

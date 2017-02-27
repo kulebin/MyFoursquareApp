@@ -1,15 +1,26 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
+import com.github.kulebin.myfoursquareapp.app.App;
+import com.github.kulebin.myfoursquareapp.model.Venue;
+
+import java.util.List;
+
 public interface IDataSource {
 
-    //void fetchVenueList(IOnResultCallback pOnResultCallback);
+    String APP_SERVICE_KEY = "dataSource";
 
-    <Result> void fetchData(String pUrl, IOnResultCallback<Result> pOnResultCallback);
+    void fetchVenueList(IOnResultCallback<List<Venue>> pOnResultCallback);
+
+    void fetchVenueById(String pVenueId, IOnResultCallback<Venue> pOnResultCallback);
 
     final class Impl {
 
         public static IDataSource newInstance() {
             return new FoursquareDataSource();
+        }
+
+        public static IDataSource get() {
+            return App.get(APP_SERVICE_KEY);
         }
     }
 

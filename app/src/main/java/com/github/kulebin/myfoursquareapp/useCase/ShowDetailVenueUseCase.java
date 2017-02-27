@@ -2,7 +2,6 @@ package com.github.kulebin.myfoursquareapp.useCase;
 
 import android.util.Log;
 
-import com.github.kulebin.myfoursquareapp.api.Api;
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
@@ -11,17 +10,15 @@ import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
 public class ShowDetailVenueUseCase {
 
-    private final IDataSource mDataSource;
     private final VenueDetailPresentation mPresenter;
 
-    public ShowDetailVenueUseCase(final IDataSource pDataSource, final VenueDetailPresentation pPresenter) {
-        mDataSource = pDataSource;
+    public ShowDetailVenueUseCase(final VenueDetailPresentation pPresenter) {
         mPresenter = pPresenter;
     }
 
     public void showDetailVenue() {
 
-        mDataSource.fetchData(Api.getVenuesByIdUrl(mPresenter.getVenueId()), new IOnResultCallback<Venue>() {
+        IDataSource.Impl.get().fetchVenueById(mPresenter.getVenueId(), new IOnResultCallback<Venue>() {
 
             @Override
             public void onStart() {
@@ -43,5 +40,4 @@ public class ShowDetailVenueUseCase {
             }
         });
     }
-
 }

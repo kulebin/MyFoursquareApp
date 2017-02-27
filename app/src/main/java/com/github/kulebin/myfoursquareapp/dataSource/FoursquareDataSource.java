@@ -1,64 +1,26 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
-import android.os.Handler;
-
 import com.github.kulebin.myfoursquareapp.api.Api;
-import com.github.kulebin.myfoursquareapp.http.IHttpClient;
 import com.github.kulebin.myfoursquareapp.model.Venue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 class FoursquareDataSource implements IDataSource {
 
+    private final IDataLoader mIDataLoader = IDataLoader.Impl.newInstance();
+
     @Override
-    public <Result> void fetchData(final String pUrl, final IOnResultCallback<Result> pOnResultCallback) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                pOnResultCallback.onStart();
-                IHttpClient.Impl.get().doRequest(pUrl, new IHttpClient.IOnResult() {
-
-                    @Override
-                    public void onSuccess(final String result) {
-                        final Result data = parseResponse(pUrl, result);
-
-                        handler.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                pOnResultCallback.onSuccess(data);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final IOException e) {
-                        handler.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                pOnResultCallback.onError(e);
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
+    public void fetchVenueList(final IOnResultCallback<List<Venue>> pOnResultCallback) {
+        mIDataLoader.loadData(Api.getVenuesTrendingUrl(), pOnResultCallback);
     }
 
-    private <T> T parseResponse(String pUrl, String pResponse) {
-        //todo parsing logic should be implemented here
-        if (Api.getVenuesTrendingUrl().equals(pUrl)) {
-            return (T) initVenueList();
-        } else {
-            return (T) new Venue("4347394793479", pResponse, "some location", "contacts", 5.6F, null);
-        }
+    @Override
+    public void fetchVenueById(final String pVenueId, final IOnResultCallback<Venue> pOnResultCallback) {
+        mIDataLoader.loadData(Api.getVenuesByIdUrl(pVenueId), pOnResultCallback);
     }
 
+    //todo will be deleted later
     private List<Venue> initVenueList() {
         final List<Venue> venueList = new ArrayList<>();
         venueList.add(new Venue("4347394793479", "place 1", "some location", "contacts", 5.6F, null));
