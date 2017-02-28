@@ -1,7 +1,5 @@
 package com.github.kulebin.myfoursquareapp.useCase;
 
-import android.util.Log;
-
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
@@ -28,9 +26,9 @@ public class ShowDetailVenueUseCase {
             @Override
             public void onSuccess(final Venue venue) {
                 mPresenter.setProgress(false);
-                mPresenter.presentVenueToShowData(new VenueDisplayData(venue));
-                //todo should be deleted
-                Log.d("ShowDetailVenueUseCase", venue.getName());
+                if (venue != null) {
+                    mPresenter.presentVenueToShowData(new VenueDisplayData(venue));
+                }
             }
 
             @Override

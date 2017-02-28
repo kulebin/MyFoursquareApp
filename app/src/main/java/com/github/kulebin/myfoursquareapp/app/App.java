@@ -35,7 +35,7 @@ public class App extends Application {
         return super.getSystemService(pServiceKey);
     }
 
-    public static <T> T get(Context pContext, final String pServiceKey) {
+    public static <T> T get(final Context pContext, final String pServiceKey) {
         if (pContext == null || pServiceKey == null) {
             throw new IllegalArgumentException();
         }
@@ -43,12 +43,7 @@ public class App extends Application {
         T systemService = (T) pContext.getSystemService(pServiceKey);
 
         if (systemService == null) {
-            pContext = pContext.getApplicationContext();
-            systemService = (T) pContext.getSystemService(pServiceKey);
-        }
-
-        if (systemService == null) {
-            throw new IllegalStateException(pServiceKey + " not available");
+            systemService = get(pServiceKey);
         }
 
         return systemService;

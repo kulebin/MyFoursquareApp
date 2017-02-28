@@ -29,14 +29,15 @@ public class ShowVenueListUseCase {
             @Override
             public void onSuccess(final List<Venue> pVenueList) {
                 mPresenter.setProgress(false);
-                final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
+                if (pVenueList != null) {
+                    final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
 
-                for (final Venue venue : pVenueList) {
-                    venueToShowList.add(new VenueDisplayData(venue));
+                    for (final Venue venue : pVenueList) {
+                        venueToShowList.add(new VenueDisplayData(venue));
+                    }
+
+                    mPresenter.presentVenueToShowData(venueToShowList);
                 }
-
-                mPresenter.setProgress(false);
-                mPresenter.presentVenueToShowData(venueToShowList);
             }
 
             @Override
