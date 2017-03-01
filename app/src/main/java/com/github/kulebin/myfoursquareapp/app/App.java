@@ -3,6 +3,7 @@ package com.github.kulebin.myfoursquareapp.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
 import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
 
@@ -10,6 +11,7 @@ public class App extends Application {
 
     private IThreadManager mThreadManager;
     private IHttpClient mHttpClient;
+    private IDataSource mDataSource;
 
     @Override
     public void onCreate() {
@@ -17,6 +19,7 @@ public class App extends Application {
 
         mThreadManager = IThreadManager.Impl.newInstance();
         mHttpClient = IHttpClient.Impl.newInstance();
+        mDataSource = IDataSource.Impl.newInstance();
         ContextHolder.set(this);
     }
 
@@ -26,23 +29,33 @@ public class App extends Application {
             return mThreadManager;
         } else if (IHttpClient.APP_SERVICE_KEY.equals(pServiceKey)) {
             return mHttpClient;
+        } else if (IDataSource.APP_SERVICE_KEY.equals(pServiceKey)) {
+            return mDataSource;
         }
         return super.getSystemService(pServiceKey);
     }
 
-    public static <T> T get(Context pContext, final String pServiceKey) {
+    public static <T> T get(final Context pContext, final String pServiceKey) {
         if (pContext == null || pServiceKey == null) {
             throw new IllegalArgumentException();
         }
+
         T systemService = (T) pContext.getSystemService(pServiceKey);
+
         if (systemService == null) {
-            pContext = pContext.getApplicationContext();
-            systemService = (T) pContext.getSystemService(pServiceKey);
+            final Context context = pContext.getApplicationContext();
+            systemService = (T) context.getSystemService(pServiceKey);
         }
+
         if (systemService == null) {
             throw new IllegalStateException(pServiceKey + " not available");
         }
+
         return systemService;
+    }
+
+    public static <T> T get(final String pServiceKey) {
+        return get(ContextHolder.get(), pServiceKey);
     }
 
 }

@@ -1,33 +1,26 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
+import com.github.kulebin.myfoursquareapp.api.Api;
 import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.thread.ITask;
-import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
-import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
-import com.github.kulebin.myfoursquareapp.thread.ProgressCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class FoursquareDataSource implements EntityGateway {
+class FoursquareDataSource implements IDataSource {
+
+    private final IDataLoader mIDataLoader = IDataLoader.Impl.newInstance();
 
     @Override
-    public void fetchVenueList(final OnResultCallback pOnResultCallback) {
-        IThreadManager.Impl.get().execute(
-                new ITask<Void, Void, List<Venue>>() {
-
-                    @Override
-                    public List<Venue> perform(Void pVoid, ProgressCallback<Void> progressCallback) throws Exception {
-                        //Long operation imitation
-                        TimeUnit.SECONDS.sleep(2);
-                        return initVenueList();
-                    }
-                },
-                null,
-                pOnResultCallback);
+    public void fetchVenueList(final IOnResultCallback<List<Venue>> pOnResultCallback) {
+        mIDataLoader.loadData(Api.getVenuesTrendingUrl(), pOnResultCallback);
     }
 
+    @Override
+    public void fetchVenueById(final String pVenueId, final IOnResultCallback<Venue> pOnResultCallback) {
+        mIDataLoader.loadData(Api.getVenuesByIdUrl(pVenueId), pOnResultCallback);
+    }
+
+    //todo will be deleted later
     private List<Venue> initVenueList() {
         final List<Venue> venueList = new ArrayList<>();
         venueList.add(new Venue("4347394793479", "place 1", "some location", "contacts", 5.6F, null));

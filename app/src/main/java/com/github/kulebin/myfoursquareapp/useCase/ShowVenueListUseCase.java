@@ -1,27 +1,25 @@
 package com.github.kulebin.myfoursquareapp.useCase;
 
-import com.github.kulebin.myfoursquareapp.dataSource.EntityGateway;
-import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
-import com.github.kulebin.myfoursquareapp.presenter.VenueListPresentation;
+import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
+import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.thread.OnResultCallback;
+import com.github.kulebin.myfoursquareapp.presenter.VenueListPresentation;
+import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowVenueListUseCase {
 
-    private final EntityGateway mEntityGateway;
     private final VenueListPresentation mPresenter;
 
-    public ShowVenueListUseCase(final EntityGateway pEntityGateway, final VenueListPresentation pPresenter) {
-        mEntityGateway = pEntityGateway;
+    public ShowVenueListUseCase(final VenueListPresentation pPresenter) {
         mPresenter = pPresenter;
     }
 
     public void showVenueList() {
 
-        mEntityGateway.fetchVenueList(new OnResultCallback<List<Venue>, Void>() {
+        IDataSource.Impl.get().fetchVenueList(new IOnResultCallback<List<Venue>>() {
 
             @Override
             public void onStart() {
@@ -29,24 +27,23 @@ public class ShowVenueListUseCase {
             }
 
             @Override
-            public void onSuccess(final List<Venue> venueList) {
+            public void onSuccess(final List<Venue> pVenueList) {
                 mPresenter.setProgress(false);
-                final List<VenueDisplayData> venueToShowList = new ArrayList<>(venueList.size());
-                for (final Venue venue : venueList) {
-                    venueToShowList.add(new VenueDisplayData(venue));
+                if (pVenueList != null) {
+                    final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
+
+                    for (final Venue venue : pVenueList) {
+                        venueToShowList.add(new VenueDisplayData(venue));
+                    }
+
+                    mPresenter.presentVenueToShowData(venueToShowList);
                 }
-                mPresenter.presentVenueToShowData(venueToShowList);
             }
 
             @Override
             public void onError(final Exception e) {
                 mPresenter.setProgress(false);
                 mPresenter.onError(e);
-            }
-
-            @Override
-            public void onProgressChanged(final Void pVoid) {
-                //ignore
             }
         });
     }

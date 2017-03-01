@@ -5,7 +5,7 @@ import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
 import java.util.List;
 
-public interface VenueListPresentation {
+public interface VenueListPresentation extends BasePresentation {
 
     void presentVenueToShowData(List<VenueDisplayData> venueToShowData);
 
@@ -14,9 +14,5 @@ public interface VenueListPresentation {
     void onBindView(VenueItemView holder, int position);
 
     void onViewCreated();
-
-    void onError(Exception e);
-
-    void setProgress(boolean isVisible);
 
 }
