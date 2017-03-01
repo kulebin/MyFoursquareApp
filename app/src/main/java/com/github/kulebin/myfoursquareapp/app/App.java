@@ -43,24 +43,19 @@ public class App extends Application {
         T systemService = (T) pContext.getSystemService(pServiceKey);
 
         if (systemService == null) {
-            systemService = get(pServiceKey);
+            final Context context = pContext.getApplicationContext();
+            systemService = (T) context.getSystemService(pServiceKey);
         }
-
-        return systemService;
-    }
-
-    public static <T> T get(final String pServiceKey) {
-        if (pServiceKey == null) {
-            throw new IllegalArgumentException();
-        }
-
-        T systemService = (T) ContextHolder.get().getSystemService(pServiceKey);
 
         if (systemService == null) {
             throw new IllegalStateException(pServiceKey + " not available");
         }
 
         return systemService;
+    }
+
+    public static <T> T get(final String pServiceKey) {
+        return get(ContextHolder.get(), pServiceKey);
     }
 
 }
