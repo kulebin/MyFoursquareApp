@@ -2,6 +2,8 @@ package com.github.kulebin.myfoursquareapp.dataSource;
 
 import android.os.Handler;
 
+import com.github.kulebin.myfoursquareapp.dataSource.processor.IProcessor;
+import com.github.kulebin.myfoursquareapp.dataSource.processor.ProcessorType;
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
 
 import java.io.IOException;
@@ -21,14 +23,26 @@ class DataLoader implements IDataLoader {
 
                     @Override
                     public void onSuccess(final String result) {
-                        //todo parse data and pass result in onSuccess callback
-                        handler.post(new Runnable() {
+                        try {
+                            final ProcessorType processorType = UrlProcessorTypeMatcher.getProcessorType(url);
+                            final Result data = IProcessor.Impl.get(processorType).processData(result);
 
-                            @Override
-                            public void run() {
-                                pOnResultCallback.onSuccess(null);
-                            }
-                        });
+                            handler.post(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    pOnResultCallback.onSuccess(data);
+                                }
+                            });
+                        } catch (final Exception pE) {
+                            handler.post(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    pOnResultCallback.onError(pE);
+                                }
+                            });
+                        }
                     }
 
                     @Override
