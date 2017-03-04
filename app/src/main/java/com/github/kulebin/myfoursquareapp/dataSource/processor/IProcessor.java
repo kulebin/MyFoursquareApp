@@ -6,10 +6,8 @@ public interface IProcessor {
 
     final class Impl {
 
-        public static IProcessor get(final ProcessorType pType) {
-            return ProcessorFactory.get(pType);
+        public static IProcessor get(final ProcessorType pType) throws Exception {
+            return ProcessorFactory.create(pType);
         }
-
     }
-
 }
