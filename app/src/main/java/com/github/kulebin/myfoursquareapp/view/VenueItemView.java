@@ -4,7 +4,7 @@ public interface VenueItemView {
 
     void displayName(String name);
 
-    void displayLocation(String location);
+    void displayAddress(String address);
 
     void displayRating(String rating);
 
