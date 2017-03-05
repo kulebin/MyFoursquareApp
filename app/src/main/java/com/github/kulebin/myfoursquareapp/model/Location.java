@@ -41,4 +41,18 @@ public class Location {
     public String getCountry() {
         return country;
     }
+
+    public String getFormattedAddress() {
+        if (address != null) {
+            String displayAddress = address;
+
+            if (city != null) {
+                displayAddress += ", " + city;
+            }
+
+            return displayAddress;
+        } else {
+            return null;
+        }
+    }
 }

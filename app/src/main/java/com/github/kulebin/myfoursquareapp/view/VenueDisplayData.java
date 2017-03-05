@@ -10,7 +10,7 @@ public class VenueDisplayData {
 
     public VenueDisplayData(final Venue pVenue) {
         name = pVenue.getName();
-        address = pVenue.getFormattedAddress();
+        address = pVenue.getLocation().getFormattedAddress();
         rating = pVenue.getRating();
     }
 
