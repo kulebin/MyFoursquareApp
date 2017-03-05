@@ -11,7 +11,7 @@ import java.io.IOException;
 class DataLoader implements IDataLoader {
 
     @Override
-    public <Result> void loadData(final String url, final IOnResultCallback<Result> pOnResultCallback) {
+    public <Result> void loadData(final String url, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pProcessorType) {
 
         final Handler handler = new Handler();
         new Thread(new Runnable() {
@@ -24,8 +24,7 @@ class DataLoader implements IDataLoader {
                     @Override
                     public void onSuccess(final String result) {
                         try {
-                            final ProcessorType processorType = UrlProcessorTypeMatcher.getProcessorType(url);
-                            final Result data = IProcessor.Impl.get(processorType).processData(result);
+                            final Result data = IProcessor.Impl.get(pProcessorType).processData(result);
 
                             handler.post(new Runnable() {
 

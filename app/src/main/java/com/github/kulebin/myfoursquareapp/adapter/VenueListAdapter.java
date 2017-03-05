@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
-import com.github.kulebin.myfoursquareapp.model.Location;
-import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
+import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 

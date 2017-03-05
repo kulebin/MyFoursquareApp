@@ -47,4 +47,18 @@ public class Venue {
     public String getDescription() {
         return description;
     }
+
+    public String getFormattedAddress() {
+        if (location.getAddress() != null) {
+            String displayAddress = location.getAddress();
+
+            if (location.getCity() != null) {
+                displayAddress += ", " + location.getCity();
+            }
+
+            return displayAddress;
+        } else {
+            return null;
+        }
+    }
 }

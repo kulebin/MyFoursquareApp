@@ -6,13 +6,13 @@ import com.github.kulebin.myfoursquareapp.BuildConfig;
 
 public final class Api {
 
-    public static final String SCHEME = "https://";
-    public static final String AUTHORITY = "api.foursquare.com";
-    public static final String BASE_URL = SCHEME + AUTHORITY;
-    public static final String API_VERSION = "v2";
+    private static final String SCHEME = "https://";
+    private static final String AUTHORITY = "api.foursquare.com";
+    private static final String BASE_URL = SCHEME + AUTHORITY;
+    private static final String API_VERSION = "v2";
 
-    public static final String PATH_VENUES = "venues";
-    public static final String PATH_TRENDING = "trending";
+    private static final String PATH_VENUES = "venues";
+    private static final String PATH_TRENDING = "trending";
 
     private static final String PARAM_DATE_VERIFIED = "v";
     private static final String PARAM_LATITUDE_AND_LONGITUDE = "ll";
