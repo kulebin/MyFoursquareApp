@@ -6,7 +6,10 @@ import com.github.kulebin.myfoursquareapp.BuildConfig;
 
 public final class Api {
 
-    private static final String BASE_URL = "https://api.foursquare.com/v2";
+    private static final String SCHEME = "https://";
+    private static final String AUTHORITY = "api.foursquare.com";
+    private static final String BASE_URL = SCHEME + AUTHORITY;
+    private static final String API_VERSION = "v2";
 
     private static final String PATH_VENUES = "venues";
     private static final String PATH_TRENDING = "trending";
@@ -24,6 +27,7 @@ public final class Api {
 
     private static final Uri VENUE_BASE_URI = Uri.parse(Api.BASE_URL)
             .buildUpon()
+            .appendPath(API_VERSION)
             .appendPath(PATH_VENUES)
             .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
             .appendQueryParameter(PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)

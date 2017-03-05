@@ -33,7 +33,7 @@ public class VenueListPresenter implements VenueListPresentation {
     public void onBindView(final VenueItemView view, final int position) {
         final VenueDisplayData venueDisplayData = mVenueDisplayList.get(position);
         view.displayName(venueDisplayData.getName());
-        view.displayLocation(venueDisplayData.getLocation());
+        view.displayAddress(venueDisplayData.getAddress());
         view.displayRating(String.valueOf(venueDisplayData.getRating()));
     }
 

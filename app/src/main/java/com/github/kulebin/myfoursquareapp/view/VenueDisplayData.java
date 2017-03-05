@@ -5,12 +5,12 @@ import com.github.kulebin.myfoursquareapp.model.Venue;
 public class VenueDisplayData {
 
     private final String name;
-    private final String location;
+    private final String address;
     private final float rating;
 
     public VenueDisplayData(final Venue pVenue) {
         name = pVenue.getName();
-        location = pVenue.getLocation();
+        address = pVenue.getLocation().getFormattedAddress();
         rating = pVenue.getRating();
     }
 
@@ -18,8 +18,8 @@ public class VenueDisplayData {
         return name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getAddress() {
+        return address;
     }
 
     public float getRating() {

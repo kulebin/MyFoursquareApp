@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
-import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
+import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 
@@ -37,13 +37,13 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
     public static class VenueItemViewHolder extends RecyclerView.ViewHolder implements VenueItemView {
 
         TextView nameView;
-        TextView locationView;
+        TextView addressView;
         TextView ratingView;
 
         public VenueItemViewHolder(final View itemView) {
             super(itemView);
             this.nameView = (TextView) itemView.findViewById(R.id.venueNameTextView);
-            this.locationView = (TextView) itemView.findViewById(R.id.venueLocationTextView);
+            this.addressView = (TextView) itemView.findViewById(R.id.venueLocationTextView);
             this.ratingView = (TextView) itemView.findViewById(R.id.venueRatingTextViewView);
         }
 
@@ -53,8 +53,8 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
         }
 
         @Override
-        public void displayLocation(final String location) {
-            locationView.setText(location);
+        public void displayAddress(final String address) {
+            addressView.setText(address);
         }
 
         @Override
