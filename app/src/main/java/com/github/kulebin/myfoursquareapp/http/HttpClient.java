@@ -17,18 +17,27 @@ class HttpClient implements IHttpClient {
     private static final int READ_TIMEOUT = 5000;
     private static final int CONNECTION_TIMEOUT = 8000;
 
+    private IInterceptor mInterceptor;
+
     @Override
     public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
-        execute(pHttpRequest.getUrl(),
-                pHttpRequest.getRequestType(),
-                pHttpRequest.getHeaders(),
-                pHttpRequest.getBody(),
+        final HttpRequest httpRequest = modifyRequest(pHttpRequest);
+        execute(httpRequest.getUrl(),
+                httpRequest.getRequestType(),
+                httpRequest.getHeaders(),
+                httpRequest.getBody(),
                 pIOnResult);
     }
 
     @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult) {
-        execute(pUrl, HttpRequestType.GET, null, null, pIOnResult);
+        final String url = modifyRequest(pUrl);
+        execute(url, HttpRequestType.GET, null, null, pIOnResult);
+    }
+
+    @Override
+    public void configure(final IInterceptor pInterceptor) {
+        this.mInterceptor = pInterceptor;
     }
 
     private void applyBody(final HttpURLConnection httpURLConnection, final String body) throws IOException {
@@ -97,6 +106,10 @@ class HttpClient implements IHttpClient {
             }
         }
 
+        if (isConfigured()) {
+            mInterceptor.onRequestExecuted(responseCode, pUrl);
+        }
+
         if (isSuccess) {
             pIOnResult.onSuccess(response);
         } else if (exception == null) {
@@ -109,6 +122,24 @@ class HttpClient implements IHttpClient {
             pIOnResult.onError(new HttpRequestException(responseCode, response, httpRequest, pIOnResult));
         } else {
             pIOnResult.onError(exception);
+        }
+    }
+
+    private boolean isConfigured() {
+        return mInterceptor != null;
+    }
+
+    private <T> T modifyRequest(final T pRequest) {
+        if (isConfigured()) {
+            final T modifiedRequest = mInterceptor.onPreExecute(pRequest);
+
+            if (modifiedRequest != null) {
+                return modifiedRequest;
+            } else {
+                return pRequest;
+            }
+        } else {
+            return pRequest;
         }
     }
 }

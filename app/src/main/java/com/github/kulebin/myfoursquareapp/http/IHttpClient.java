@@ -19,6 +19,8 @@ public interface IHttpClient {
 
     void doRequest(String pUrl, IOnResult pIOnResult);
 
+    void configure(IInterceptor pInterceptor);
+
     final class Impl {
 
         public static IHttpClient get() {

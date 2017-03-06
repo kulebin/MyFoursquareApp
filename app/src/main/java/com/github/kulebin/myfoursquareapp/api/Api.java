@@ -2,8 +2,6 @@ package com.github.kulebin.myfoursquareapp.api;
 
 import android.net.Uri;
 
-import com.github.kulebin.myfoursquareapp.BuildConfig;
-
 public final class Api {
 
     private static final String SCHEME = "https://";
@@ -18,8 +16,6 @@ public final class Api {
     private static final String PARAM_LATITUDE_AND_LONGITUDE = "ll";
     private static final String PARAM_LIMIT = "limit";
     private static final String PARAM_RADIUS = "radius";
-    private static final String PARAM_CLIENT_ID = "client_id";
-    private static final String PARAM_CLIENT_SECRET = "client_secret";
 
     //temporarily hardcoded values
     private static final String VALUE_DATE_VERIFIED = "20170226"; /*Date value format: YYYYMMDD */
@@ -30,8 +26,6 @@ public final class Api {
             .appendPath(API_VERSION)
             .appendPath(PATH_VENUES)
             .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
-            .appendQueryParameter(PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)
-            .appendQueryParameter(PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET)
             .build();
 
     public static String getVenuesTrendingUrl() {
