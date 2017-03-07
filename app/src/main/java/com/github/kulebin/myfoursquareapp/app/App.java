@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
-import com.github.kulebin.myfoursquareapp.http.IInterceptor;
 import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
 
 public class App extends Application {
@@ -19,8 +18,7 @@ public class App extends Application {
         super.onCreate();
 
         mThreadManager = IThreadManager.Impl.newInstance();
-        mHttpClient = IHttpClient.Impl.newInstance();
-        mHttpClient.configure(IInterceptor.Impl.newInstance());
+        initHttpClient();
         mDataSource = IDataSource.Impl.newInstance();
         ContextHolder.set(this);
     }
@@ -60,4 +58,9 @@ public class App extends Application {
         return get(ContextHolder.get(), pServiceKey);
     }
 
+    private void initHttpClient() {
+        mHttpClient = IHttpClient.Impl.newInstance();
+        mHttpClient.setRequestInterceptor(new HttpRequestInterceptor());
+        mHttpClient.setResponseInterceptor(new HttpResponseInterceptor());
+    }
 }

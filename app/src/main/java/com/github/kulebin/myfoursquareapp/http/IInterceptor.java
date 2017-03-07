@@ -2,15 +2,13 @@ package com.github.kulebin.myfoursquareapp.http;
 
 public interface IInterceptor {
 
-    <T> T onPreExecute(T request);
+    interface IRequestIntercept {
 
-    void onRequestExecuted(int statusCode, String url);
-
-    final class Impl {
-
-        public static IInterceptor newInstance() {
-            return new Interceptor();
-        }
+        HttpRequest interceptRequest(HttpRequest request);
     }
 
+    interface IResponseIntercept {
+
+        void interceptResponse(int statusCode, String url);
+    }
 }

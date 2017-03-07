@@ -19,7 +19,9 @@ public interface IHttpClient {
 
     void doRequest(String pUrl, IOnResult pIOnResult);
 
-    void configure(IInterceptor pInterceptor);
+    void setRequestInterceptor(IInterceptor.IRequestIntercept pInterceptor);
+
+    void setResponseInterceptor(IInterceptor.IResponseIntercept pInterceptor);
 
     final class Impl {
 
