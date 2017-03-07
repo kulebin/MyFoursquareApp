@@ -4,7 +4,7 @@ public interface IInterceptor {
 
     interface IRequestIntercept {
 
-        HttpRequest interceptRequest(HttpRequest request);
+        void interceptRequest(HttpRequest request);
     }
 
     interface IResponseIntercept {

@@ -12,13 +12,8 @@ class HttpRequestInterceptor implements IInterceptor.IRequestIntercept {
     private static final String PARAM_CLIENT_SECRET = "client_secret";
 
     @Override
-    public HttpRequest interceptRequest(final HttpRequest request) {
-        return new HttpRequest.Builder()
-                .setRequestType(request.getRequestType())
-                .setUrl(appendAccessCredentials(request.getUrl()))
-                .setHeaders(request.getHeaders())
-                .setBody(request.getBody())
-                .build();
+    public void interceptRequest(final HttpRequest request) {
+        request.setUrl(appendAccessCredentials(request.getUrl()));
     }
 
     private String appendAccessCredentials(final String pUrl) {
