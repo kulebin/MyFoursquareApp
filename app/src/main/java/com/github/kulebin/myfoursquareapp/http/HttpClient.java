@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 class HttpClient implements IHttpClient {
 
@@ -17,18 +16,31 @@ class HttpClient implements IHttpClient {
     private static final int READ_TIMEOUT = 5000;
     private static final int CONNECTION_TIMEOUT = 8000;
 
+    private IInterceptor.IRequestIntercept mRequestInterceptor;
+    private IInterceptor.IResponseIntercept mResponseInterceptor;
+
     @Override
     public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
-        execute(pHttpRequest.getUrl(),
-                pHttpRequest.getRequestType(),
-                pHttpRequest.getHeaders(),
-                pHttpRequest.getBody(),
-                pIOnResult);
+        execute(pHttpRequest, pIOnResult);
     }
 
     @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult) {
-        execute(pUrl, HttpRequestType.GET, null, null, pIOnResult);
+        final HttpRequest httpRequest = new HttpRequest.Builder()
+                .setUrl(pUrl)
+                .setRequestType(HttpRequestType.GET)
+                .build();
+        execute(httpRequest, pIOnResult);
+    }
+
+    @Override
+    public void setRequestInterceptor(final IInterceptor.IRequestIntercept pInterceptor) {
+        this.mRequestInterceptor = pInterceptor;
+    }
+
+    @Override
+    public void setResponseInterceptor(final IInterceptor.IResponseIntercept pInterceptor) {
+        this.mResponseInterceptor = pInterceptor;
     }
 
     private void applyBody(final HttpURLConnection httpURLConnection, final String body) throws IOException {
@@ -38,7 +50,11 @@ class HttpClient implements IHttpClient {
         os.close();
     }
 
-    private void execute(final String pUrl, final HttpRequestType pRequestType, final Map<String, String> pHeaders, final String pBody, final IOnResult pIOnResult) {
+    private void execute(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
+        if (mRequestInterceptor != null) {
+            mRequestInterceptor.interceptRequest(pHttpRequest);
+        }
+
         HttpURLConnection connection = null;
         BufferedReader reader = null;
         IOException exception = null;
@@ -47,18 +63,18 @@ class HttpClient implements IHttpClient {
         boolean isSuccess;
 
         try {
-            final URL reqUrl = new URL(pUrl);
+            final URL reqUrl = new URL(pHttpRequest.getUrl());
             connection = ((HttpURLConnection) reqUrl.openConnection());
-            connection.setRequestMethod(pRequestType.name());
+            connection.setRequestMethod(pHttpRequest.getRequestType().name());
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
-            if (pHeaders != null) {
-                for (final String key : pHeaders.keySet()) {
-                    connection.addRequestProperty(key, pHeaders.get(key));
+            if (pHttpRequest.getHeaders() != null) {
+                for (final String key : pHttpRequest.getHeaders().keySet()) {
+                    connection.addRequestProperty(key, pHttpRequest.getHeaders().get(key));
                 }
             }
-            if (pBody != null) {
-                applyBody(connection, pBody);
+            if (pHttpRequest.getBody() != null) {
+                applyBody(connection, pHttpRequest.getBody());
             }
 
             final InputStream inputStream;
@@ -97,16 +113,14 @@ class HttpClient implements IHttpClient {
             }
         }
 
+        if (mResponseInterceptor != null) {
+            mResponseInterceptor.interceptResponse(responseCode, pHttpRequest.getUrl());
+        }
+
         if (isSuccess) {
             pIOnResult.onSuccess(response);
         } else if (exception == null) {
-            final HttpRequest httpRequest = new HttpRequest.Builder()
-                    .setRequestType(pRequestType)
-                    .setUrl(pUrl)
-                    .setHeaders(pHeaders)
-                    .setBody(pBody)
-                    .build();
-            pIOnResult.onError(new HttpRequestException(responseCode, response, httpRequest, pIOnResult));
+            pIOnResult.onError(new HttpRequestException(responseCode, response, pHttpRequest, pIOnResult));
         } else {
             pIOnResult.onError(exception);
         }

@@ -32,6 +32,22 @@ public final class HttpRequest {
         return mBody;
     }
 
+    public void setRequestType(final HttpRequestType pRequestType) {
+        mRequestType = pRequestType;
+    }
+
+    public void setUrl(final String pUrl) {
+        mUrl = pUrl;
+    }
+
+    public void setHeaders(final Map<String, String> pHeaders) {
+        mHeaders = pHeaders;
+    }
+
+    public void setBody(final String pBody) {
+        mBody = pBody;
+    }
+
     public static class Builder {
 
         private HttpRequestType requestType;

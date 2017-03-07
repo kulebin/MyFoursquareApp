@@ -18,7 +18,7 @@ public class App extends Application {
         super.onCreate();
 
         mThreadManager = IThreadManager.Impl.newInstance();
-        mHttpClient = IHttpClient.Impl.newInstance();
+        initHttpClient();
         mDataSource = IDataSource.Impl.newInstance();
         ContextHolder.set(this);
     }
@@ -58,4 +58,9 @@ public class App extends Application {
         return get(ContextHolder.get(), pServiceKey);
     }
 
+    private void initHttpClient() {
+        mHttpClient = IHttpClient.Impl.newInstance();
+        mHttpClient.setRequestInterceptor(new HttpRequestInterceptor());
+        mHttpClient.setResponseInterceptor(new HttpResponseInterceptor());
+    }
 }
