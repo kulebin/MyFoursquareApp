@@ -19,7 +19,7 @@ class DataLoader implements IDataLoader {
             @Override
             public void run() {
                 pOnResultCallback.onStart();
-                IHttpClient.Impl.get().doRequest(url, new IHttpClient.IOnResult() {
+                IHttpClient.Impl.get().doRequest(url, new IHttpClient.IOnResult<String>() {
 
                     @Override
                     public void onSuccess(final String result) {
