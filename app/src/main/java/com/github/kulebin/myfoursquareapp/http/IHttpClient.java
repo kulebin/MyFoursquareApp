@@ -16,13 +16,13 @@ public interface IHttpClient {
         void onError(IOException e);
     }
 
-    void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult);
-
     void doRequest(String pUrl, IOnResult pIOnResult);
 
-    void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult, IOnResultConvert pOnResultConvert);
-
     void doRequest(String pUrl, IOnResult pIOnResult, IOnResultConvert pOnResultConvert);
+
+    void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult);
+
+    void doRequest(HttpRequest pHttpRequest, IOnResult pIOnResult, IOnResultConvert pOnResultConvert);
 
     void setRequestInterceptor(IInterceptor.IRequestIntercept pInterceptor);
 

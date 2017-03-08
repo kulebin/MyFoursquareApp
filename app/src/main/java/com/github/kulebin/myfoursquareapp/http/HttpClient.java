@@ -48,11 +48,6 @@ class HttpClient implements IHttpClient {
     };
 
     @Override
-    public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
-        doRequest(pHttpRequest, pIOnResult, mOnResultStringConvert);
-    }
-
-    @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult) {
         final HttpRequest httpRequest = new HttpRequest.Builder()
                 .setUrl(pUrl)
@@ -62,17 +57,22 @@ class HttpClient implements IHttpClient {
     }
 
     @Override
-    public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
-        execute(pHttpRequest, pIOnResult, pOnResultConvert);
-    }
-
-    @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
         final HttpRequest httpRequest = new HttpRequest.Builder()
                 .setUrl(pUrl)
                 .setRequestType(HttpRequestType.GET)
                 .build();
         doRequest(httpRequest, pIOnResult, pOnResultConvert);
+    }
+
+    @Override
+    public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
+        doRequest(pHttpRequest, pIOnResult, mOnResultStringConvert);
+    }
+
+    @Override
+    public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
+        execute(pHttpRequest, pIOnResult, pOnResultConvert);
     }
 
     @Override
