@@ -19,9 +19,37 @@ class HttpClient implements IHttpClient {
     private IInterceptor.IRequestIntercept mRequestInterceptor;
     private IInterceptor.IResponseIntercept mResponseInterceptor;
 
+    private final IOnResultConvert<String> mOnResultStringConvert = new IOnResultConvert<String>() {
+
+        @Override
+        public String convert(final InputStream pInputStream) throws IOException {
+            BufferedReader reader = null;
+            StringBuilder stringBuilder = null;
+
+            try {
+                reader = new BufferedReader(new InputStreamReader(pInputStream));
+                stringBuilder = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(TAG, "Error occurred during BufferedReader closing", e);
+                    }
+                }
+            }
+            return stringBuilder.toString();
+        }
+    };
+
     @Override
     public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
-        execute(pHttpRequest, pIOnResult);
+        doRequest(pHttpRequest, pIOnResult, mOnResultStringConvert);
     }
 
     @Override
@@ -30,7 +58,21 @@ class HttpClient implements IHttpClient {
                 .setUrl(pUrl)
                 .setRequestType(HttpRequestType.GET)
                 .build();
-        execute(httpRequest, pIOnResult);
+        doRequest(httpRequest, pIOnResult);
+    }
+
+    @Override
+    public void doRequest(final HttpRequest pHttpRequest, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
+        execute(pHttpRequest, pIOnResult, pOnResultConvert);
+    }
+
+    @Override
+    public void doRequest(final String pUrl, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
+        final HttpRequest httpRequest = new HttpRequest.Builder()
+                .setUrl(pUrl)
+                .setRequestType(HttpRequestType.GET)
+                .build();
+        doRequest(httpRequest, pIOnResult, pOnResultConvert);
     }
 
     @Override
@@ -50,17 +92,18 @@ class HttpClient implements IHttpClient {
         os.close();
     }
 
-    private void execute(final HttpRequest pHttpRequest, final IOnResult pIOnResult) {
+    private <Result> void execute(final HttpRequest pHttpRequest, final IOnResult<Result> pIOnResult, final IOnResultConvert<Result> pOnResultConvert) {
         if (mRequestInterceptor != null) {
             mRequestInterceptor.interceptRequest(pHttpRequest);
         }
 
         HttpURLConnection connection = null;
-        BufferedReader reader = null;
+        Result response = null;
         IOException exception = null;
-        String response = null;
+        InputStream inputStream = null;
         int responseCode = -1;
         boolean isSuccess;
+        String errorMessage = null;
 
         try {
             final URL reqUrl = new URL(pHttpRequest.getUrl());
@@ -68,48 +111,41 @@ class HttpClient implements IHttpClient {
             connection.setRequestMethod(pHttpRequest.getRequestType().name());
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
+
             if (pHttpRequest.getHeaders() != null) {
                 for (final String key : pHttpRequest.getHeaders().keySet()) {
                     connection.addRequestProperty(key, pHttpRequest.getHeaders().get(key));
                 }
             }
+
             if (pHttpRequest.getBody() != null) {
                 applyBody(connection, pHttpRequest.getBody());
             }
 
-            final InputStream inputStream;
             responseCode = connection.getResponseCode();
-
             isSuccess = connection.getResponseCode() >= 200 && responseCode < 300;
+
             if (isSuccess) {
                 inputStream = connection.getInputStream();
+                response = pOnResultConvert.convert(inputStream);
             } else {
                 inputStream = connection.getErrorStream();
+                errorMessage = mOnResultStringConvert.convert(inputStream);
             }
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            final StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            response = stringBuilder.toString();
-            inputStream.close();
-
         } catch (final IOException e) {
             isSuccess = false;
             exception = e;
 
         } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (final IOException pE) {
+                    Log.e(TAG, "Error closing stream", pE);
+                }
+            }
             if (connection != null) {
                 connection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
-                }
             }
         }
 
@@ -120,7 +156,7 @@ class HttpClient implements IHttpClient {
         if (isSuccess) {
             pIOnResult.onSuccess(response);
         } else if (exception == null) {
-            pIOnResult.onError(new HttpRequestException(responseCode, response, pHttpRequest, pIOnResult));
+            pIOnResult.onError(new HttpRequestException(responseCode, errorMessage, pHttpRequest, pIOnResult));
         } else {
             pIOnResult.onError(exception);
         }
