@@ -11,33 +11,33 @@ import static com.github.kulebin.myfoursquareapp.http.HttpRequestType.POST;
 
 class HttpRequestInterceptor implements IInterceptor.IRequestIntercept {
 
+    private static final String PARAM_TEMPLATE = "&%s=%s";
     private static final String PARAM_CLIENT_ID = "client_id";
     private static final String PARAM_CLIENT_SECRET = "client_secret";
-    private static final String PARAM_TEMPLATE = "&%s=%s";
+    private static final String APP_CLIENT_ID = BuildConfig.MY_4SQUARE_APP_CLIENT_ID;
+    private static final String APP_CLIENT_SECRET = BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET;
+    private static final String FORMATTED_PARAM_CLIENT_ID = String.format(PARAM_TEMPLATE, PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID);
+    private static final String FORMATTED_PARAM_CLIENT_SECRET = String.format(PARAM_TEMPLATE, PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET);
 
     @Override
     public void interceptRequest(final HttpRequest request) {
-        final Uri uri = Uri.parse(request.getUrl());
-
-        if (Api.AUTHORITY.equals(uri.getAuthority())) {
+        if (Api.AUTHORITY.equals(request.getUrl().getAuthority())) {
             if (request.getRequestType() == POST) {
                 request.setBody(appendAccessCredentialsToBody(request.getBody()));
             } else {
-                request.setUrl(appendAccessCredentials(uri));
+                request.setUrl(appendAccessCredentials(request.getUrl()));
             }
         }
     }
 
-    private String appendAccessCredentials(final Uri pUri) {
-        return pUri.buildUpon()
-                .appendQueryParameter(PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)
-                .appendQueryParameter(PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET)
-                .build()
-                .toString();
+    private Uri appendAccessCredentials(final Uri pUrl) {
+        return pUrl.buildUpon()
+                .appendQueryParameter(PARAM_CLIENT_ID, APP_CLIENT_ID)
+                .appendQueryParameter(PARAM_CLIENT_SECRET, APP_CLIENT_SECRET)
+                .build();
     }
 
     private String appendAccessCredentialsToBody(final String pBody) {
-        return pBody + String.format(PARAM_TEMPLATE, PARAM_CLIENT_ID, BuildConfig.MY_4SQUARE_APP_CLIENT_ID)
-                + String.format(PARAM_TEMPLATE, PARAM_CLIENT_SECRET, BuildConfig.MY_4SQUARE_APP_CLIENT_SECRET);
+        return pBody + FORMATTED_PARAM_CLIENT_ID + FORMATTED_PARAM_CLIENT_SECRET;
     }
 }
