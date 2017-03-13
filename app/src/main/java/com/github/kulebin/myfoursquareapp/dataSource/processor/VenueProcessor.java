@@ -30,6 +30,7 @@ class VenueProcessor implements IProcessor {
     private static final String LOCATION_COUNTRY = "country";
 
     private static final String PHOTOS_OBJECT = "photos";
+    private static final String BEST_PHOTO_OBJECT = "bestPhoto";
     private static final String PHOTOS_COUNT = "count";
     private static final String PHOTOS_GROUPS_ARRAY = "groups";
     private static final String PHOTOS_GROUPS_ITEMS_ARRAY = "items";
@@ -64,10 +65,10 @@ class VenueProcessor implements IProcessor {
         return new Venue(
                 pVenueObject.getString(VENUE_ID),
                 pVenueObject.getString(VENUE_NAME),
-                getContact(pVenueObject.getJSONObject(CONTACT_OBJECT)),
+                pVenueObject.has(CONTACT_OBJECT) ? getContact(pVenueObject.getJSONObject(CONTACT_OBJECT)): null,
                 getLocation(pVenueObject.getJSONObject(LOCATION_OBJECT)),
                 pVenueObject.has(VENUE_RATING) ? Float.valueOf(pVenueObject.getString(VENUE_RATING)) : -1,
-                pVenueObject.has(PHOTOS_OBJECT) ? getImageUrl(pVenueObject.getJSONObject(PHOTOS_OBJECT)) : null,
+                getImageUrl(pVenueObject),
                 pVenueObject.has(VENUE_DESCRIPTION) ? pVenueObject.getString(VENUE_DESCRIPTION) : null
         );
     }
@@ -94,22 +95,35 @@ class VenueProcessor implements IProcessor {
     }
 
     private String getImageUrl(final JSONObject pJSONObject) throws JSONException {
-        if (pJSONObject.getInt(PHOTOS_COUNT) > 0) {
-            final JSONArray groups = pJSONObject.getJSONArray(PHOTOS_GROUPS_ARRAY);
-            final JSONArray items = groups.getJSONObject(0).getJSONArray(PHOTOS_GROUPS_ITEMS_ARRAY);
+        if (pJSONObject.has(BEST_PHOTO_OBJECT)) {
+            return parseImageUrl(pJSONObject.getJSONObject(BEST_PHOTO_OBJECT));
+        } else if (pJSONObject.has(PHOTOS_OBJECT)) {
+            if (pJSONObject.getInt(PHOTOS_COUNT) > 0) {
+                final JSONArray groups = pJSONObject.getJSONArray(PHOTOS_GROUPS_ARRAY);
+                final JSONArray items = groups.getJSONObject(0).getJSONArray(PHOTOS_GROUPS_ITEMS_ARRAY);
 
-            for (int i = 0; i < items.length(); i++) {
-                final JSONObject item = items.getJSONObject(i);
+                for (int i = 0; i < items.length(); i++) {
+                    final JSONObject item = items.getJSONObject(i);
+                    final String url = parseImageUrl(item);
 
-                if (PHOTO_VISIBILITY_VALUE_PUBLIC.equals(item.getString(PHOTO_VISIBILITY))) {
-                    return String.format(PHOTO_URL_TEMPLATE,
-                            item.getString(PHOTO_PREFIX),
-                            item.getString(PHOTO_WIDTH),
-                            item.getString(PHOTO_HEIGHT),
-                            item.getString(PHOTO_SUFFIX));
+                    if (url != null) {
+                        return url;
+                    }
                 }
             }
         }
         return null;
+    }
+
+    private String parseImageUrl(final JSONObject pJSONObject) throws JSONException {
+        if (PHOTO_VISIBILITY_VALUE_PUBLIC.equals(pJSONObject.getString(PHOTO_VISIBILITY))) {
+            return String.format(PHOTO_URL_TEMPLATE,
+                    pJSONObject.getString(PHOTO_PREFIX),
+                    pJSONObject.getString(PHOTO_WIDTH),
+                    pJSONObject.getString(PHOTO_HEIGHT),
+                    pJSONObject.getString(PHOTO_SUFFIX));
+        } else {
+            return null;
+        }
     }
 }

@@ -4,6 +4,8 @@ import android.os.Handler;
 
 import com.github.kulebin.myfoursquareapp.dataSource.processor.IProcessor;
 import com.github.kulebin.myfoursquareapp.dataSource.processor.ProcessorType;
+import com.github.kulebin.myfoursquareapp.http.HttpRequest;
+import com.github.kulebin.myfoursquareapp.http.HttpRequestType;
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
 
 import java.io.IOException;
@@ -11,20 +13,28 @@ import java.io.IOException;
 class DataLoader implements IDataLoader {
 
     @Override
-    public <Result> void loadData(final String url, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pProcessorType) {
+    public <Result> void loadData(final String pUrl, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pProcessorType) {
+        final HttpRequest request = new HttpRequest.Builder()
+                .setRequestType(HttpRequestType.GET)
+                .setUrl(pUrl)
+                .build();
+        loadData(request, pOnResultCallback, pProcessorType);
+    }
 
+    @Override
+    public <Result> void loadData(final HttpRequest pRequest, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pType) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 pOnResultCallback.onStart();
-                IHttpClient.Impl.get().doRequest(url, new IHttpClient.IOnResult<String>() {
+                IHttpClient.Impl.get().doRequest(pRequest, new IHttpClient.IOnResult<String>() {
 
                     @Override
                     public void onSuccess(final String result) {
                         try {
-                            final Result data = IProcessor.Impl.get(pProcessorType).processData(result);
+                            final Result data = IProcessor.Impl.get(pType).processData(result);
 
                             handler.post(new Runnable() {
 
@@ -57,6 +67,5 @@ class DataLoader implements IDataLoader {
                 });
             }
         }).start();
-
     }
 }
