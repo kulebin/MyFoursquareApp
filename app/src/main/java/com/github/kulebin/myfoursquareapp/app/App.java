@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
+import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.thread.IThreadManager;
 
 public class App extends Application {
@@ -12,6 +13,7 @@ public class App extends Application {
     private IThreadManager mThreadManager;
     private IHttpClient mHttpClient;
     private IDataSource mDataSource;
+    private IImageLoader mImageLoader;
 
     @Override
     public void onCreate() {
@@ -20,6 +22,7 @@ public class App extends Application {
         mThreadManager = IThreadManager.Impl.newInstance();
         initHttpClient();
         mDataSource = IDataSource.Impl.newInstance();
+        mImageLoader = IImageLoader.Impl.newInstance();
         ContextHolder.set(this);
     }
 
@@ -31,6 +34,8 @@ public class App extends Application {
             return mHttpClient;
         } else if (IDataSource.APP_SERVICE_KEY.equals(pServiceKey)) {
             return mDataSource;
+        } else if (IImageLoader.APP_SERVICE_KEY.equals(pServiceKey)){
+            return mImageLoader;
         }
         return super.getSystemService(pServiceKey);
     }

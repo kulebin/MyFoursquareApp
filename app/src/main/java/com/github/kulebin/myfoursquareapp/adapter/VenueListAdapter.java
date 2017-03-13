@@ -4,14 +4,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
+import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 
+    private static final int IMAGE_WIDTH = 300;
+    private static final int IMAGE_HEIGHT = 300;
     private final VenueListPresenter mPresenter;
 
     public VenueListAdapter(final VenueListPresenter pVenueListPresenter) {
@@ -39,12 +43,14 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
         TextView nameView;
         TextView addressView;
         TextView ratingView;
+        ImageView imageView;
 
         public VenueItemViewHolder(final View itemView) {
             super(itemView);
             this.nameView = (TextView) itemView.findViewById(R.id.venueNameTextView);
             this.addressView = (TextView) itemView.findViewById(R.id.venueLocationTextView);
             this.ratingView = (TextView) itemView.findViewById(R.id.venueRatingTextViewView);
+            this.imageView = (ImageView) itemView.findViewById(R.id.venueImageView);
         }
 
         @Override
@@ -64,7 +70,9 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
-            //todo load and show image
+            if (imageUrl != null) {
+                IImageLoader.Impl.get().draw(imageUrl, imageView, IMAGE_WIDTH, IMAGE_HEIGHT);
+            }
         }
     }
 
