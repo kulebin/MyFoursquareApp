@@ -55,6 +55,7 @@ class ImageLoader implements IImageLoader {
 
     @Override
     public void draw(final String pUrl, final ImageView pView, final int pWidth, final int pHeight) {
+        pView.setTag(pUrl);
         final Handler handler = new Handler();
         new Thread(new Runnable() {
 
@@ -67,11 +68,15 @@ class ImageLoader implements IImageLoader {
                             @Override
                             public void onSuccess(final Bitmap pBitmap) {
                                 final Bitmap bitmap = resizeBitmap(pBitmap, pWidth, pHeight);
+                                
                                 handler.post(new Runnable() {
 
                                     @Override
                                     public void run() {
-                                        pView.setImageBitmap(bitmap);
+                                        final String tag = (String) pView.getTag();
+                                        if (tag != null && tag.equals(pUrl)) {
+                                            pView.setImageBitmap(bitmap);
+                                        }
                                     }
                                 });
                             }

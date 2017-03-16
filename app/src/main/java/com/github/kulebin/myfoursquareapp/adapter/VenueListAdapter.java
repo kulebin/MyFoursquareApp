@@ -70,6 +70,8 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
+            imageView.setImageResource(R.drawable.placeholder_foursquare);
+
             if (imageUrl != null) {
                 IImageLoader.Impl.get().draw(imageUrl, imageView, IMAGE_WIDTH, IMAGE_HEIGHT);
             }
