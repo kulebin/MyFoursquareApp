@@ -1,17 +1,15 @@
 package com.github.kulebin.myfoursquareapp.http;
 
-import android.net.Uri;
-
 import java.util.Map;
 
 public final class HttpRequest {
 
     private HttpRequestType mRequestType;
-    private Uri mUrl;
+    private String mUrl;
     private Map<String, String> mHeaders;
     private String mBody;
 
-    private HttpRequest(final HttpRequestType pRequestType, final Uri pUrl, final Map<String, String> pHeaders, final String pBody) {
+    private HttpRequest(final HttpRequestType pRequestType, final String pUrl, final Map<String, String> pHeaders, final String pBody) {
         mRequestType = pRequestType;
         mUrl = pUrl;
         mHeaders = pHeaders;
@@ -22,7 +20,7 @@ public final class HttpRequest {
         return mRequestType;
     }
 
-    public Uri getUrl() {
+    public String getUrl() {
         return mUrl;
     }
 
@@ -38,7 +36,7 @@ public final class HttpRequest {
         mRequestType = pRequestType;
     }
 
-    public void setUrl(final Uri pUrl) {
+    public void setUrl(final String pUrl) {
         mUrl = pUrl;
     }
 
@@ -53,7 +51,7 @@ public final class HttpRequest {
     public static class Builder {
 
         private HttpRequestType requestType;
-        private Uri url;
+        private String url;
         private Map<String, String> headers;
         private String body;
 
@@ -62,7 +60,7 @@ public final class HttpRequest {
             return this;
         }
 
-        public Builder setUrl(final Uri pUrl) {
+        public Builder setUrl(final String pUrl) {
             this.url = pUrl;
             return this;
         }

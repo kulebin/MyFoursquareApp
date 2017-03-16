@@ -33,25 +33,28 @@ public final class Api {
             .appendPath(PATH_VENUES)
             .build();
 
-    public static Uri getVenuesTrendingUrl() {
+    public static String getVenuesTrendingUrl() {
         return VENUE_BASE_URI.buildUpon()
                 .appendPath(PATH_TRENDING)
                 .appendQueryParameter(PARAM_LATITUDE_AND_LONGITUDE, VALUE_LATITUDE_AND_LONGITUDE_MINSK)
                 .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
-                .build();
+                .build()
+                .toString();
     }
 
-    public static Uri getVenuesByIdUrl(final String pId) {
+    public static String getVenuesByIdUrl(final String pId) {
         return VENUE_BASE_URI.buildUpon()
                 .appendPath(pId)
                 .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
-                .build();
+                .build()
+                .toString();
     }
 
     public static HttpRequest getVenuesNearbyRequest() {
-        final Uri url = VENUE_BASE_URI.buildUpon()
+        final String url = VENUE_BASE_URI.buildUpon()
                 .appendPath(PATH_NEARBY)
-                .build();
+                .build()
+                .toString();
 
         final String body = String.format(PARAM_TEMPLATE, PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
                 + PARAM_SEPARATOR

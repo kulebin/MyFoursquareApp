@@ -1,6 +1,5 @@
 package com.github.kulebin.myfoursquareapp.http;
 
-import android.net.Uri;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -51,7 +50,7 @@ class HttpClient implements IHttpClient {
     @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult) {
         final HttpRequest httpRequest = new HttpRequest.Builder()
-                .setUrl(Uri.parse(pUrl))
+                .setUrl(pUrl)
                 .setRequestType(HttpRequestType.GET)
                 .build();
         doRequest(httpRequest, pIOnResult);
@@ -60,7 +59,7 @@ class HttpClient implements IHttpClient {
     @Override
     public void doRequest(final String pUrl, final IOnResult pIOnResult, final IOnResultConvert pOnResultConvert) {
         final HttpRequest httpRequest = new HttpRequest.Builder()
-                .setUrl(Uri.parse(pUrl))
+                .setUrl(pUrl)
                 .setRequestType(HttpRequestType.GET)
                 .build();
         doRequest(httpRequest, pIOnResult, pOnResultConvert);
@@ -107,7 +106,7 @@ class HttpClient implements IHttpClient {
         String errorMessage = null;
 
         try {
-            final URL reqUrl = new URL(pHttpRequest.getUrl().toString());
+            final URL reqUrl = new URL(pHttpRequest.getUrl());
             connection = ((HttpURLConnection) reqUrl.openConnection());
             connection.setRequestMethod(pHttpRequest.getRequestType().name());
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
@@ -151,7 +150,7 @@ class HttpClient implements IHttpClient {
         }
 
         if (mResponseInterceptor != null) {
-            mResponseInterceptor.interceptResponse(responseCode, pHttpRequest.getUrl().toString());
+            mResponseInterceptor.interceptResponse(responseCode, pHttpRequest.getUrl());
         }
 
         if (isSuccess) {

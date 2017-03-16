@@ -1,6 +1,5 @@
 package com.github.kulebin.myfoursquareapp.dataSource;
 
-import android.net.Uri;
 import android.os.Handler;
 
 import com.github.kulebin.myfoursquareapp.dataSource.processor.IProcessor;
@@ -14,7 +13,7 @@ import java.io.IOException;
 class DataLoader implements IDataLoader {
 
     @Override
-    public <Result> void loadData(final Uri pUrl, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pProcessorType) {
+    public <Result> void loadData(final String pUrl, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pProcessorType) {
         final HttpRequest request = new HttpRequest.Builder()
                 .setRequestType(HttpRequestType.GET)
                 .setUrl(pUrl)
