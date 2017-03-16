@@ -8,13 +8,15 @@ import com.github.kulebin.myfoursquareapp.http.HttpRequestType;
 public final class Api {
 
     private static final String SCHEME = "https://";
-    public static final String AUTHORITY = "api.foursquare.com";
-    private static final String BASE_URL = SCHEME + AUTHORITY;
+    private static final String AUTHORITY = "api.foursquare.com";
     private static final String API_VERSION = "v2";
+    public static final String BASE_URL = SCHEME + AUTHORITY + "/" + API_VERSION;
 
     private static final String PATH_VENUES = "venues";
     private static final String PATH_TRENDING = "trending";
     private static final String PATH_NEARBY = "nearby";
+    private static final String PATH_SEARCH = "search";
+    private static final String PATH_RECOMMENDATIONS = "recommendations";
 
     private static final String PARAM_DATE_VERIFIED = "v";
     private static final String PARAM_LATITUDE_AND_LONGITUDE = "ll";
@@ -29,8 +31,12 @@ public final class Api {
 
     private static final Uri VENUE_BASE_URI = Uri.parse(Api.BASE_URL)
             .buildUpon()
-            .appendPath(API_VERSION)
             .appendPath(PATH_VENUES)
+            .build();
+
+    private static final Uri SEARCH_BASE_URI = Uri.parse(Api.BASE_URL)
+            .buildUpon()
+            .appendPath(PATH_SEARCH)
             .build();
 
     public static String getVenuesTrendingUrl() {
@@ -65,5 +71,14 @@ public final class Api {
                 .setRequestType(HttpRequestType.POST)
                 .setBody(body)
                 .build();
+    }
+
+    public static String getRecommendationsUrl() {
+        return SEARCH_BASE_URI.buildUpon()
+                .appendPath(PATH_RECOMMENDATIONS)
+                .appendQueryParameter(PARAM_DATE_VERIFIED, VALUE_DATE_VERIFIED)
+                .appendQueryParameter(PARAM_LATITUDE_AND_LONGITUDE, VALUE_LATITUDE_AND_LONGITUDE_MINSK)
+                .build()
+                .toString();
     }
 }

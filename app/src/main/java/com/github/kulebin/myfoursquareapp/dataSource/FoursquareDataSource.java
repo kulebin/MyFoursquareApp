@@ -12,7 +12,7 @@ class FoursquareDataSource implements IDataSource {
 
     @Override
     public void fetchVenueList(final IOnResultCallback<List<Venue>> pOnResultCallback) {
-        mIDataLoader.loadData(Api.getVenuesNearbyRequest(), pOnResultCallback, ProcessorType.VENUES_LIST);
+        mIDataLoader.loadData(Api.getRecommendationsUrl(), pOnResultCallback, ProcessorType.RECOMMENDATIONS);
     }
 
     @Override
