@@ -10,7 +10,7 @@ public interface IImageLoader {
 
     void draw(String pUrl, ImageView pView);
 
-    void draw(String pUrl, ImageView pView, int pWidth, int pHeight);
+    void draw(String pUrl, ImageView pView, DisplayOptions pOptions);
 
     final class Impl {
 

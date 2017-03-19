@@ -3,6 +3,9 @@ package com.github.kulebin.myfoursquareapp.imageLoader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
@@ -11,6 +14,9 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 class ImageLoader implements IImageLoader {
 
@@ -21,8 +27,12 @@ class ImageLoader implements IImageLoader {
         int getHeight();
     }
 
+    private static final String TAG = ImageLoader.class.getSimpleName();
     private static final int CHUNK_SIZE_POWER = 16; //chunk size = 2^x
+    private static final int MAX_THREAD_NUMBER = 3;
 
+    private final ExecutorService mExecutorService = Executors.newFixedThreadPool(MAX_THREAD_NUMBER);
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private ISizeParams mSizeParamsCallback;
 
     private final IHttpClient.IOnResultConvert<Bitmap> mBitmapConverter = new IHttpClient.IOnResultConvert<Bitmap>() {
@@ -50,32 +60,78 @@ class ImageLoader implements IImageLoader {
 
     @Override
     public void draw(final String pUrl, final ImageView pView) {
-        draw(pUrl, pView, pView.getWidth(), pView.getHeight());
+        draw(pUrl, pView, null);
     }
 
     @Override
-    public void draw(final String pUrl, final ImageView pView, final int pWidth, final int pHeight) {
+    public void draw(final String pUrl, final ImageView pView, final DisplayOptions pOptions) {
+        if (pUrl == null) {
+            setPlaceholder(pView, pOptions.getPlaceholderId());
+
+            return;
+        }
+
+        if (pUrl.equals(pView.getTag())) {
+            return;
+        }
+
+        if (pOptions == null || pOptions.getWidth() == 0 || pOptions.getHeight() == 0) {
+            final DisplayOptions options;
+
+            if (pOptions == null) {
+                options = new DisplayOptions(0);
+            } else {
+                options = pOptions;
+            }
+
+            pView.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    options.setWidth(pView.getWidth());
+                    options.setHeight(pView.getHeight());
+                    execute(pUrl, pView, options);
+                }
+            });
+        } else {
+            execute(pUrl, pView, pOptions);
+        }
+    }
+
+    private void execute(final String pUrl, final ImageView pView, @NonNull final DisplayOptions pOptions) {
+        final WeakReference<ImageView> imageViewReference = new WeakReference<>(pView);
+        setPlaceholder(pView, pOptions.getPlaceholderId());
         pView.setTag(pUrl);
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
+
+        mExecutorService.execute(new Runnable() {
 
             @Override
             public void run() {
-                mSizeParamsCallback = initSizeParamsCallback(pWidth, pHeight);
+                if (imageViewReference.get() == null || !pUrl.equals(imageViewReference.get().getTag())) {
+                    return;
+                }
+
+                mSizeParamsCallback = initSizeParamsCallback(pOptions.getWidth(), pOptions.getHeight());
 
                 IHttpClient.Impl.get().doRequest(pUrl, new IHttpClient.IOnResult<Bitmap>() {
 
                             @Override
-                            public void onSuccess(final Bitmap pBitmap) {
-                                final Bitmap bitmap = resizeBitmap(pBitmap, pWidth, pHeight);
-                                
-                                handler.post(new Runnable() {
+                            public void onSuccess(Bitmap pBitmap) {
+                                final Bitmap bitmap = centerCropBitmap(pBitmap, pOptions.getWidth(), pOptions.getHeight());
+                                pBitmap = null;
+                                System.gc();
+
+                                mHandler.post(new Runnable() {
 
                                     @Override
                                     public void run() {
-                                        final String tag = (String) pView.getTag();
-                                        if (tag != null && tag.equals(pUrl)) {
-                                            pView.setImageBitmap(bitmap);
+                                        final ImageView imageView = imageViewReference.get();
+                                        if (imageView != null) {
+                                            final String tag = (String) imageView.getTag();
+
+                                            if (tag != null && tag.equals(pUrl)) {
+                                                imageView.setImageBitmap(bitmap);
+                                            }
                                         }
                                     }
                                 });
@@ -83,18 +139,33 @@ class ImageLoader implements IImageLoader {
 
                             @Override
                             public void onError(final IOException e) {
-                                handler.post(new Runnable() {
+                                mHandler.post(new Runnable() {
 
                                     @Override
                                     public void run() {
-                                        // TODO: 3/11/2017 handle error
+                                        Log.d(TAG, "Error! Image has not been loaded. URL: " + pUrl);
                                     }
                                 });
                             }
                         },
                         mBitmapConverter);
             }
-        }).start();
+
+            private ISizeParams initSizeParamsCallback(final int pWidth, final int pHeight) {
+                return new ISizeParams() {
+
+                    @Override
+                    public int getWidth() {
+                        return pWidth;
+                    }
+
+                    @Override
+                    public int getHeight() {
+                        return pHeight;
+                    }
+                };
+            }
+        });
     }
 
     private int calculateInSampleSize(final BitmapFactory.Options options, final int reqWidth, final int reqHeight) {
@@ -103,34 +174,37 @@ class ImageLoader implements IImageLoader {
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
         }
 
         return inSampleSize;
     }
 
-    private ISizeParams initSizeParamsCallback(final int pWidth, final int pHeight) {
-        return new ISizeParams() {
+    private Bitmap centerCropBitmap(final Bitmap pBitmap, final int pWidth, final int pHeight) {
+        if (pWidth > 0 && pWidth < pBitmap.getWidth()
+                || pHeight > 0 && pHeight < pBitmap.getHeight()) {
+            final int x = (pBitmap.getWidth() - pWidth) / 2;
+            final int y = (pBitmap.getHeight() - pHeight) / 2;
 
-            @Override
-            public int getWidth() {
-                return pWidth;
-            }
-
-            @Override
-            public int getHeight() {
-                return pHeight;
-            }
-        };
+            return Bitmap.createBitmap(pBitmap, x > 0 ? x : 0, y > 0 ? y : 0,
+                    pWidth < pBitmap.getWidth() ? pWidth : pBitmap.getWidth(),
+                    pHeight < pBitmap.getHeight() ? pHeight : pBitmap.getHeight());
+        } else {
+            return pBitmap;
+        }
     }
 
-    private Bitmap resizeBitmap(final Bitmap pBitmap, final int pWidth, final int pHeight) {
-        return Bitmap.createBitmap(pBitmap, 0, 0,
-                pWidth < pBitmap.getWidth() ? pWidth : pBitmap.getWidth(),
-                pHeight < pBitmap.getHeight() ? pHeight : pBitmap.getHeight());
+    private void setPlaceholder(final ImageView pView, final int pResId) {
+        if (pResId > 0) {
+            pView.setImageResource(pResId);
+        } else {
+            pView.setImageResource(android.R.color.transparent);
+        }
     }
 }
-
-

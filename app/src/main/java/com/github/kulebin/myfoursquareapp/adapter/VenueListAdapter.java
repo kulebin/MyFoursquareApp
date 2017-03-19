@@ -8,14 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
+import com.github.kulebin.myfoursquareapp.imageLoader.DisplayOptions;
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 
-    private static final int IMAGE_WIDTH = 300;
-    private static final int IMAGE_HEIGHT = 300;
     private final VenueListPresenter mPresenter;
 
     public VenueListAdapter(final VenueListPresenter pVenueListPresenter) {
@@ -70,12 +69,8 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
-            imageView.setImageResource(R.drawable.placeholder_foursquare);
-
-            if (imageUrl != null) {
-                IImageLoader.Impl.get().draw(imageUrl, imageView, IMAGE_WIDTH, IMAGE_HEIGHT);
-            }
+            final DisplayOptions options = new DisplayOptions(R.drawable.placeholder_foursquare);
+            IImageLoader.Impl.get().draw(imageUrl, imageView, options);
         }
     }
-
 }
