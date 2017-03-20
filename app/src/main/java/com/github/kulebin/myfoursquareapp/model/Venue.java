@@ -7,7 +7,7 @@ public class Venue {
     private final String contact;
     private final Location location;
     private final float rating;
-    private final String imageUrl;
+    private String imageUrl;
     private final String description;
 
     public Venue(final String pId, final String pName, final String pContact, final Location pLocation, final float pRating, final String pImageUrl, final String pDescription) {
@@ -46,5 +46,9 @@ public class Venue {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setImageUrl(final String pImageUrl) {
+        this.imageUrl = pImageUrl;
     }
 }

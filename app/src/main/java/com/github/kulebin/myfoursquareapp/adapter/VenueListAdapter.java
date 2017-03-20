@@ -4,9 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
+import com.github.kulebin.myfoursquareapp.imageLoader.DisplayOptions;
+import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 
@@ -39,12 +42,14 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
         TextView nameView;
         TextView addressView;
         TextView ratingView;
+        ImageView imageView;
 
         public VenueItemViewHolder(final View itemView) {
             super(itemView);
             this.nameView = (TextView) itemView.findViewById(R.id.venueNameTextView);
             this.addressView = (TextView) itemView.findViewById(R.id.venueLocationTextView);
             this.ratingView = (TextView) itemView.findViewById(R.id.venueRatingTextViewView);
+            this.imageView = (ImageView) itemView.findViewById(R.id.venueImageView);
         }
 
         @Override
@@ -64,8 +69,8 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
-            //todo load and show image
+            final DisplayOptions options = new DisplayOptions(R.drawable.placeholder_foursquare);
+            IImageLoader.Impl.get().draw(imageUrl, imageView, options);
         }
     }
-
 }

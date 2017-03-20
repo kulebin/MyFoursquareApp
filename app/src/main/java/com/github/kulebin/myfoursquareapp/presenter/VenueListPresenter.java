@@ -35,6 +35,7 @@ public class VenueListPresenter implements VenueListPresentation {
         view.displayName(venueDisplayData.getName());
         view.displayAddress(venueDisplayData.getAddress());
         view.displayRating(String.valueOf(venueDisplayData.getRating()));
+        view.displayImage(venueDisplayData.getImageUrl());
     }
 
     @Override

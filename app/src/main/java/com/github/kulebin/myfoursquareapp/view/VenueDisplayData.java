@@ -7,11 +7,13 @@ public class VenueDisplayData {
     private final String name;
     private final String address;
     private final float rating;
+    private final String imageUrl;
 
     public VenueDisplayData(final Venue pVenue) {
         name = pVenue.getName();
         address = pVenue.getLocation().getFormattedAddress();
         rating = pVenue.getRating();
+        imageUrl = pVenue.getImageUrl();
     }
 
     public String getName() {
@@ -24,5 +26,9 @@ public class VenueDisplayData {
 
     public float getRating() {
         return rating;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
