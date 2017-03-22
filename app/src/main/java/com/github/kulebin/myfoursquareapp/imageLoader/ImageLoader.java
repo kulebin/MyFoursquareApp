@@ -5,18 +5,23 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.github.kulebin.myfoursquareapp.http.IHttpClient;
+import com.github.kulebin.myfoursquareapp.util.LifoBlockingDeque;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 class ImageLoader implements IImageLoader {
 
@@ -30,10 +35,20 @@ class ImageLoader implements IImageLoader {
     private static final String TAG = ImageLoader.class.getSimpleName();
     private static final int CHUNK_SIZE_POWER = 16; //chunk size = 2^x
     private static final int MAX_THREAD_NUMBER = 3;
+    private static final int MAX_CACHE_SIZE = 32 * 1000 * 1000;
+    private static final int CACHE_SIZE = Math.min((int) (Runtime.getRuntime().maxMemory() / 6), MAX_CACHE_SIZE);
 
-    private final ExecutorService mExecutorService = Executors.newFixedThreadPool(MAX_THREAD_NUMBER);
+    private final Executor mExecutor = new ThreadPoolExecutor(MAX_THREAD_NUMBER, MAX_THREAD_NUMBER, 1000, TimeUnit.MILLISECONDS, new LifoBlockingDeque<Runnable>());
     private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Lock mLock = new ReentrantLock();
     private ISizeParams mSizeParamsCallback;
+    private final LruCache<String, Bitmap> mLruCache = new LruCache<String, Bitmap>(CACHE_SIZE) {
+
+        @Override
+        protected int sizeOf(final String key, final Bitmap value) {
+            return key.length() + value.getByteCount();
+        }
+    };
 
     private final IHttpClient.IOnResultConvert<Bitmap> mBitmapConverter = new IHttpClient.IOnResultConvert<Bitmap>() {
 
@@ -71,8 +86,16 @@ class ImageLoader implements IImageLoader {
             return;
         }
 
-        if (pUrl.equals(pView.getTag())) {
-            return;
+        mLock.lock();
+        try {
+            final Bitmap bitmap = getBitmapFromCache(pUrl);
+            if (bitmap != null) {
+                pView.setImageBitmap(bitmap);
+                pView.setTag(null);
+                return;
+            }
+        } finally {
+            mLock.unlock();
         }
 
         if (pOptions == null || pOptions.getWidth() == 0 || pOptions.getHeight() == 0) {
@@ -84,12 +107,12 @@ class ImageLoader implements IImageLoader {
                 options = pOptions;
             }
 
-            pView.post(new Runnable() {
+            pView.getRootView().post(new Runnable() {
 
                 @Override
                 public void run() {
-                    options.setWidth(pView.getWidth());
-                    options.setHeight(pView.getHeight());
+                    options.setWidth(pView.getMeasuredWidth());
+                    options.setHeight(pView.getMeasuredHeight());
                     execute(pUrl, pView, options);
                 }
             });
@@ -103,7 +126,7 @@ class ImageLoader implements IImageLoader {
         setPlaceholder(pView, pOptions.getPlaceholderId());
         pView.setTag(pUrl);
 
-        mExecutorService.execute(new Runnable() {
+        mExecutor.execute(new Runnable() {
 
             @Override
             public void run() {
@@ -119,7 +142,10 @@ class ImageLoader implements IImageLoader {
                             public void onSuccess(Bitmap pBitmap) {
                                 final Bitmap bitmap = centerCropBitmap(pBitmap, pOptions.getWidth(), pOptions.getHeight());
                                 pBitmap = null;
-                                System.gc();
+
+                                mLock.lock();
+                                addBitmapToCache(pUrl, bitmap);
+                                mLock.unlock();
 
                                 mHandler.post(new Runnable() {
 
@@ -206,5 +232,15 @@ class ImageLoader implements IImageLoader {
         } else {
             pView.setImageResource(android.R.color.transparent);
         }
+    }
+
+    private void addBitmapToCache(final String pUrl, final Bitmap pBitmap) {
+        if (getBitmapFromCache(pUrl) == null) {
+            mLruCache.put(pUrl, pBitmap);
+        }
+    }
+
+    private Bitmap getBitmapFromCache(final String pUrl) {
+        return mLruCache.get(pUrl);
     }
 }
