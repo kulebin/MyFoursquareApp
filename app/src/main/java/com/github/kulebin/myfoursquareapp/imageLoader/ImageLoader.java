@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -35,20 +34,12 @@ class ImageLoader implements IImageLoader {
     private static final String TAG = ImageLoader.class.getSimpleName();
     private static final int CHUNK_SIZE_POWER = 16; //chunk size = 2^x
     private static final int MAX_THREAD_NUMBER = 3;
-    private static final int MAX_CACHE_SIZE = 32 * 1000 * 1000;
-    private static final int CACHE_SIZE = Math.min((int) (Runtime.getRuntime().maxMemory() / 6), MAX_CACHE_SIZE);
 
     private final Executor mExecutor = new ThreadPoolExecutor(MAX_THREAD_NUMBER, MAX_THREAD_NUMBER, 1000, TimeUnit.MILLISECONDS, new LifoBlockingDeque<Runnable>());
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final Lock mLock = new ReentrantLock();
+    private final BitmapLruCache mLruCache = new BitmapLruCache();
     private ISizeParams mSizeParamsCallback;
-    private final LruCache<String, Bitmap> mLruCache = new LruCache<String, Bitmap>(CACHE_SIZE) {
-
-        @Override
-        protected int sizeOf(final String key, final Bitmap value) {
-            return key.length() + value.getByteCount();
-        }
-    };
 
     private final IHttpClient.IOnResultConvert<Bitmap> mBitmapConverter = new IHttpClient.IOnResultConvert<Bitmap>() {
 
@@ -88,7 +79,7 @@ class ImageLoader implements IImageLoader {
 
         mLock.lock();
         try {
-            final Bitmap bitmap = getBitmapFromCache(pUrl);
+            final Bitmap bitmap = mLruCache.getBitmapFromCache(pUrl);
             if (bitmap != null) {
                 pView.setImageBitmap(bitmap);
                 pView.setTag(null);
@@ -144,7 +135,7 @@ class ImageLoader implements IImageLoader {
                                 pBitmap = null;
 
                                 mLock.lock();
-                                addBitmapToCache(pUrl, bitmap);
+                                mLruCache.addBitmapToCache(pUrl, bitmap);
                                 mLock.unlock();
 
                                 mHandler.post(new Runnable() {
@@ -232,15 +223,5 @@ class ImageLoader implements IImageLoader {
         } else {
             pView.setImageResource(android.R.color.transparent);
         }
-    }
-
-    private void addBitmapToCache(final String pUrl, final Bitmap pBitmap) {
-        if (getBitmapFromCache(pUrl) == null) {
-            mLruCache.put(pUrl, pBitmap);
-        }
-    }
-
-    private Bitmap getBitmapFromCache(final String pUrl) {
-        return mLruCache.get(pUrl);
     }
 }
