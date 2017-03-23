@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/venueImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/placeholder_foursquare"/>
 
     <LinearLayout
