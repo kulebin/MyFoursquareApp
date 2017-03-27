@@ -17,6 +17,9 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
     private final VenueListPresenter mPresenter;
 
+    private static final int MAX_IMAGE_WIDTH = 300;
+    private static final int MAX_IMAGE_HEIGHT = 300;
+
     public VenueListAdapter(final VenueListPresenter pVenueListPresenter) {
         this.mPresenter = pVenueListPresenter;
     }
@@ -69,8 +72,13 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
         @Override
         public void displayImage(final String imageUrl) {
-            final DisplayOptions options = new DisplayOptions(R.drawable.placeholder_foursquare);
+            final DisplayOptions options = new DisplayOptions(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT, R.drawable.placeholder_foursquare);
             IImageLoader.Impl.get().draw(imageUrl, imageView, options);
+        }
+
+        @Override
+        public void setOnClickListener(final View.OnClickListener listener) {
+            itemView.setOnClickListener(listener);
         }
     }
 }

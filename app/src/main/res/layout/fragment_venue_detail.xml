@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/activity_main"
+    android:id="@+id/fragment_venue_detail"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.kulebin.myfoursquareapp.MainActivity">
+    tools:context="com.github.kulebin.myfoursquareapp.VenueListFragment">
 
-    <include layout="@layout/content_venue_list" />
+    <TextView
+        android:id="@+id/text_venue_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <ProgressBar
         android:id="@+id/progress"
