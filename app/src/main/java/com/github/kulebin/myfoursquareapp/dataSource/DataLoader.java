@@ -24,11 +24,12 @@ class DataLoader implements IDataLoader {
     @Override
     public <Result> void loadData(final HttpRequest pRequest, final IOnResultCallback<Result> pOnResultCallback, final ProcessorType pType) {
         final Handler handler = new Handler();
+        pOnResultCallback.onStart();
+
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                pOnResultCallback.onStart();
                 IHttpClient.Impl.get().doRequest(pRequest, new IHttpClient.IOnResult<String>() {
 
                     @Override

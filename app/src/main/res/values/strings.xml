@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Foursquare</string>
+
+    <string name="TITLE_DETAIL_VENUE_ADDRESS">Address:</string>
+    <string name="TITLE_DETAIL_VENUE_CONTACT">Contact:</string>
+    <string name="TITLE_DETAIL_VENUE_DESCRIPTION">Description:</string>
 </resources>

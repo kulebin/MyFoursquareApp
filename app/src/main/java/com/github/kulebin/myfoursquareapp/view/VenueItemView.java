@@ -1,7 +1,5 @@
 package com.github.kulebin.myfoursquareapp.view;
 
-import android.view.View;
-
 public interface VenueItemView {
 
     void displayName(String name);
@@ -12,6 +10,8 @@ public interface VenueItemView {
 
     void displayImage(String imageUrl);
 
-    void setOnClickListener(View.OnClickListener listener);
+    void setVenueId(String venueId);
+
+    void setOnItemListener(VenueListContract.Presentation.OnItemListener listener);
 
 }

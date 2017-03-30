@@ -12,13 +12,17 @@ import com.github.kulebin.myfoursquareapp.imageLoader.DisplayOptions;
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
+import com.github.kulebin.myfoursquareapp.view.VenueListContract;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 
-    private final VenueListPresenter mPresenter;
-
     private static final int MAX_IMAGE_WIDTH = 300;
     private static final int MAX_IMAGE_HEIGHT = 300;
+
+    private final VenueListPresenter mPresenter;
 
     public VenueListAdapter(final VenueListPresenter pVenueListPresenter) {
         this.mPresenter = pVenueListPresenter;
@@ -42,17 +46,30 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
 
     public static class VenueItemViewHolder extends RecyclerView.ViewHolder implements VenueItemView {
 
+        String venueId;
+        @BindView(R.id.text_venue_name)
         TextView nameView;
+        @BindView(R.id.text_venue_location)
         TextView addressView;
+        @BindView(R.id.text_venue_rating)
         TextView ratingView;
+        @BindView(R.id.image_venue)
         ImageView imageView;
+        VenueListContract.Presentation.OnItemListener itemListener;
 
         public VenueItemViewHolder(final View itemView) {
             super(itemView);
-            this.nameView = (TextView) itemView.findViewById(R.id.venueNameTextView);
-            this.addressView = (TextView) itemView.findViewById(R.id.venueLocationTextView);
-            this.ratingView = (TextView) itemView.findViewById(R.id.venueRatingTextViewView);
-            this.imageView = (ImageView) itemView.findViewById(R.id.venueImageView);
+
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(final View v) {
+                    if (itemListener != null) {
+                        itemListener.onClick(venueId);
+                    }
+                }
+            });
         }
 
         @Override
@@ -77,8 +94,13 @@ public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.Venu
         }
 
         @Override
-        public void setOnClickListener(final View.OnClickListener listener) {
-            itemView.setOnClickListener(listener);
+        public void setVenueId(final String id) {
+            venueId = id;
+        }
+
+        @Override
+        public void setOnItemListener(final VenueListContract.Presentation.OnItemListener listener) {
+            itemListener = listener;
         }
     }
 }

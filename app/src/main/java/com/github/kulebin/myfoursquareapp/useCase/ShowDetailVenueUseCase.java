@@ -3,20 +3,20 @@ package com.github.kulebin.myfoursquareapp.useCase;
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.presenter.VenueDetailPresentation;
-import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
+import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
+import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
 
 public class ShowDetailVenueUseCase {
 
-    private final VenueDetailPresentation mPresenter;
+    private final VenueDetailContract.Presentation mPresenter;
 
-    public ShowDetailVenueUseCase(final VenueDetailPresentation pPresenter) {
+    public ShowDetailVenueUseCase(final VenueDetailContract.Presentation pPresenter) {
         mPresenter = pPresenter;
     }
 
-    public void showDetailVenue() {
+    public void showDetailVenue(final String pVenueId) {
 
-        IDataSource.Impl.get().fetchVenueById(mPresenter.getVenueId(), new IOnResultCallback<Venue>() {
+        IDataSource.Impl.get().fetchVenueById(pVenueId, new IOnResultCallback<Venue>() {
 
             @Override
             public void onStart() {
@@ -27,7 +27,7 @@ public class ShowDetailVenueUseCase {
             public void onSuccess(final Venue venue) {
                 mPresenter.setProgress(false);
                 if (venue != null) {
-                    mPresenter.presentVenueToShowData(new VenueDisplayData(venue));
+                    mPresenter.presentVenueToShowData(new CompleteVenueDisplayData(venue));
                 }
             }
 

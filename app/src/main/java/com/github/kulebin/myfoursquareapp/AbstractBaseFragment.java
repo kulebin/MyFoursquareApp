@@ -7,20 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.github.kulebin.myfoursquareapp.view.IViewCallback;
+import com.github.kulebin.myfoursquareapp.view.BaseContract;
 
-public abstract class AbstractBaseFragment extends Fragment implements IViewCallback {
+public abstract class AbstractBaseFragment extends Fragment implements BaseContract.View {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        return getActivity().getLayoutInflater().inflate(getViewLayout(), container, false);
+        return inflater.inflate(getViewLayout(), container, false);
     }
 
     @Override
     public void showProgress(final boolean isVisible) {
-        if (getView() != null) {
-            getView().findViewById(R.id.progress).setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        final View progress = getActivity().findViewById(R.id.progress);
+        if (progress != null) {
+            progress.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
     }
 
