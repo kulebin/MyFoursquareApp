@@ -48,7 +48,7 @@ public class VenueListFragment extends AbstractBaseFragment implements VenueList
         if (context instanceof Callback) {
             mListener = (Callback) context;
         } else {
-            throw new RuntimeException(context + " must implement Callback");
+            throw new RuntimeException(context.getClass().getCanonicalName() + " must implement " + Callback.class.getCanonicalName());
         }
     }
 

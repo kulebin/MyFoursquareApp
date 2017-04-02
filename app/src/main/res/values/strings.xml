@@ -4,4 +4,6 @@
     <string name="TITLE_DETAIL_VENUE_ADDRESS">Address:</string>
     <string name="TITLE_DETAIL_VENUE_CONTACT">Contact:</string>
     <string name="TITLE_DETAIL_VENUE_DESCRIPTION">Description:</string>
+
+    <string name="ERROR_TEXT_NO_VENUE_ID">Due to issue we currently cannot display the Venue\'s details</string>
 </resources>

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueDetailPresenter;
@@ -53,6 +54,8 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
 
         if (getArguments() != null) {
             mPresenter.onViewCreated(getArguments().getString(VENUE_ID));
+        } else {
+            Toast.makeText(getContext(), R.string.ERROR_TEXT_NO_VENUE_ID, Toast.LENGTH_LONG).show();
         }
 
         super.onViewCreated(view, savedInstanceState);

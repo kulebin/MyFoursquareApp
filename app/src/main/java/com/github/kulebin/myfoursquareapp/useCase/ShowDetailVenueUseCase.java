@@ -26,9 +26,7 @@ public class ShowDetailVenueUseCase {
             @Override
             public void onSuccess(final Venue venue) {
                 mPresenter.setProgress(false);
-                if (venue != null) {
-                    mPresenter.presentVenueToShowData(new CompleteVenueDisplayData(venue));
-                }
+                mPresenter.presentVenueToShowData(new CompleteVenueDisplayData(venue));
             }
 
             @Override

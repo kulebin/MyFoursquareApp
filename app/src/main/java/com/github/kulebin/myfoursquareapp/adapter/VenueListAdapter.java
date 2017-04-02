@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kulebin.myfoursquareapp.R;
+import com.github.kulebin.myfoursquareapp.app.ContextHolder;
 import com.github.kulebin.myfoursquareapp.imageLoader.DisplayOptions;
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
 import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
@@ -19,8 +20,8 @@ import butterknife.ButterKnife;
 
 public class VenueListAdapter extends RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder> {
 
-    private static final int MAX_IMAGE_WIDTH = 300;
-    private static final int MAX_IMAGE_HEIGHT = 300;
+    private static final int MAX_IMAGE_WIDTH = (int) ContextHolder.get().getResources().getDimension(R.dimen.venue_list_adapter_image_width);
+    private static final int MAX_IMAGE_HEIGHT = (int) ContextHolder.get().getResources().getDimension(R.dimen.venue_list_adapter_image_height);
 
     private final VenueListPresenter mPresenter;
 
