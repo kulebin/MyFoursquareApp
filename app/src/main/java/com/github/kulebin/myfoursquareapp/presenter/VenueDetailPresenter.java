@@ -1,26 +1,21 @@
 package com.github.kulebin.myfoursquareapp.presenter;
 
-import com.github.kulebin.myfoursquareapp.view.IViewCallback;
+import com.github.kulebin.myfoursquareapp.useCase.ShowDetailVenueUseCase;
+import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
+import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
-public class VenueDetailPresenter implements VenueDetailPresentation {
+public class VenueDetailPresenter implements VenueDetailContract.Presentation {
 
-    private final IViewCallback mView;
-    private VenueDisplayData mDisplayData;
+    private final VenueDetailContract.View mView;
 
-    public VenueDetailPresenter(final IViewCallback pIViewCallback) {
-        this.mView = pIViewCallback;
+    public VenueDetailPresenter(final VenueDetailContract.View pView) {
+        this.mView = pView;
     }
 
     @Override
-    public void presentVenueToShowData(final VenueDisplayData pVenueToShowData) {
-        mDisplayData = pVenueToShowData;
-    }
-
-    @Override
-    public String getVenueId() {
-        //todo: some logic to get selected Venue ID should be implemented
-        return "4fe17dfbe4b0bd44616280d7";
+    public void presentVenueToShowData(final CompleteVenueDisplayData pVenueToShowData) {
+        mView.displayData(pVenueToShowData);
     }
 
     @Override
@@ -31,5 +26,10 @@ public class VenueDetailPresenter implements VenueDetailPresentation {
     @Override
     public void setProgress(final boolean isVisible) {
         mView.showProgress(isVisible);
+    }
+
+    @Override
+    public void onViewCreated(final String pVenueId) {
+        new ShowDetailVenueUseCase(this).showDetailVenue(pVenueId);
     }
 }

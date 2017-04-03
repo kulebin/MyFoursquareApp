@@ -2,20 +2,21 @@ package com.github.kulebin.myfoursquareapp.presenter;
 
 import com.github.kulebin.myfoursquareapp.adapter.VenueListAdapter;
 import com.github.kulebin.myfoursquareapp.useCase.ShowVenueListUseCase;
-import com.github.kulebin.myfoursquareapp.view.IViewCallback;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
+import com.github.kulebin.myfoursquareapp.view.VenueListContract;
 
 import java.util.List;
 
-public class VenueListPresenter implements VenueListPresentation {
+public class VenueListPresenter implements VenueListContract.Presentation {
 
     private List<VenueDisplayData> mVenueDisplayList;
-    private IViewCallback mView;
+    private VenueListContract.View mView;
     private final VenueListAdapter mVenueListAdapter = new VenueListAdapter(this);
+    private OnItemListener mOnItemListener;
 
-    public VenueListPresenter(final IViewCallback pIViewCallback) {
-        this.mView = pIViewCallback;
+    public VenueListPresenter(final VenueListContract.View pView) {
+        this.mView = pView;
     }
 
     @Override
@@ -32,10 +33,12 @@ public class VenueListPresenter implements VenueListPresentation {
     @Override
     public void onBindView(final VenueItemView view, final int position) {
         final VenueDisplayData venueDisplayData = mVenueDisplayList.get(position);
+        view.setVenueId(venueDisplayData.getId());
         view.displayName(venueDisplayData.getName());
         view.displayAddress(venueDisplayData.getAddress());
         view.displayRating(String.valueOf(venueDisplayData.getRating()));
         view.displayImage(venueDisplayData.getImageUrl());
+        view.setOnItemListener(mOnItemListener);
     }
 
     @Override
@@ -53,7 +56,12 @@ public class VenueListPresenter implements VenueListPresentation {
         mView.showProgress(isVisible);
     }
 
+    @Override
     public VenueListAdapter getVenueListAdapter() {
         return mVenueListAdapter;
+    }
+
+    public void setOnItemListener(final OnItemListener pOnItemListener) {
+        mOnItemListener = pOnItemListener;
     }
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/fragment_venue_detail"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    tools:context="com.github.kulebin.myfoursquareapp.VenueListFragment">
+
+    <ImageView
+        android:id="@+id/image_venue"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"/>
+
+    <TextView
+        android:id="@+id/text_venue_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:id="@+id/title_venue_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TITLE_DETAIL_VENUE_ADDRESS"
+        android:theme="@style/ThemeOverlay.MyTitleText"/>
+
+    <TextView
+        android:id="@+id/text_venue_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/ThemeOverlay.MyText"/>
+
+    <TextView
+        android:id="@+id/title_venue_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TITLE_DETAIL_VENUE_CONTACT"
+        android:theme="@style/ThemeOverlay.MyTitleText"/>
+
+    <TextView
+        android:id="@+id/text_venue_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/ThemeOverlay.MyText"/>
+
+    <TextView
+        android:id="@+id/title_venue_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TITLE_DETAIL_VENUE_DESCRIPTION"
+        android:theme="@style/ThemeOverlay.MyTitleText"/>
+
+    <TextView
+        android:id="@+id/text_venue_description"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/ThemeOverlay.MyText"/>
+
+</LinearLayout>

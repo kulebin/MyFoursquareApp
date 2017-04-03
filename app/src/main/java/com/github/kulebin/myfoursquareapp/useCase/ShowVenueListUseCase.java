@@ -3,17 +3,17 @@ package com.github.kulebin.myfoursquareapp.useCase;
 import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
-import com.github.kulebin.myfoursquareapp.presenter.VenueListPresentation;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
+import com.github.kulebin.myfoursquareapp.view.VenueListContract;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowVenueListUseCase {
 
-    private final VenueListPresentation mPresenter;
+    private final VenueListContract.Presentation mPresenter;
 
-    public ShowVenueListUseCase(final VenueListPresentation pPresenter) {
+    public ShowVenueListUseCase(final VenueListContract.Presentation pPresenter) {
         mPresenter = pPresenter;
     }
 

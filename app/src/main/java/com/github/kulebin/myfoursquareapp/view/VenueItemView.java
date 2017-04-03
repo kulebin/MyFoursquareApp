@@ -10,4 +10,8 @@ public interface VenueItemView {
 
     void displayImage(String imageUrl);
 
+    void setVenueId(String venueId);
+
+    void setOnItemListener(VenueListContract.Presentation.OnItemListener listener);
+
 }
