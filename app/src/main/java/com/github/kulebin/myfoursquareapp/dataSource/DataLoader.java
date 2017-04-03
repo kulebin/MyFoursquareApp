@@ -69,15 +69,18 @@ class DataLoader implements IDataLoader {
                                 handler.sendMessage(message);
                             } else {
                                 message = handler.obtainMessage(ERROR_MESSAGE, new Exception("Error occurred during parsing: " + result));
+                                handler.sendMessage(message);
                             }
                         } catch (final Exception pE) {
                             message = handler.obtainMessage(ERROR_MESSAGE, pE);
+                            handler.sendMessage(message);
                         }
                     }
 
                     @Override
                     public void onError(final IOException pE) {
                         message = handler.obtainMessage(ERROR_MESSAGE, pE);
+                        handler.sendMessage(message);
                     }
                 });
             }
