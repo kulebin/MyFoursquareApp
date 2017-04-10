@@ -8,6 +8,8 @@ public interface VenueListContract {
 
     interface View extends BaseContract.View {
 
+        void restoreListState();
+
     }
 
     interface Presentation extends BaseContract.Presentation {

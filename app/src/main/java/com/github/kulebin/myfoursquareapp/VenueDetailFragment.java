@@ -21,6 +21,7 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
 
     public static final String TAG = VenueDetailFragment.class.getSimpleName();
     private static final String VENUE_ID = "venueId";
+    private static final String IS_TABLET_MODE = "isTabletMode";
 
     private final VenueDetailContract.Presentation mPresenter = new VenueDetailPresenter(this);
     @BindView(R.id.image_venue)
@@ -34,25 +35,32 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
     @BindView(R.id.text_venue_description)
     TextView mVenueDescriptionText;
 
-    public static VenueDetailFragment newInstance(final String pVenueId) {
+    public static VenueDetailFragment newInstance(final String pVenueId, final boolean isTabletMode) {
         final VenueDetailFragment fragment = new VenueDetailFragment();
         final Bundle args = new Bundle();
         args.putString(VENUE_ID, pVenueId);
+        args.putBoolean(IS_TABLET_MODE, isTabletMode);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static VenueDetailFragment newInstance(final String pVenueId) {
+        return newInstance(pVenueId, false);
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         if (getArguments() != null) {
+            if(!getArguments().getBoolean(IS_TABLET_MODE)){
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+                if (actionBar != null) {
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+                }
+            }
+
             mPresenter.onViewCreated(getArguments().getString(VENUE_ID));
         } else {
             Toast.makeText(getContext(), R.string.ERROR_TEXT_NO_VENUE_ID, Toast.LENGTH_LONG).show();

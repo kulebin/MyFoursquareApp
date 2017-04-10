@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements VenueListFragment.Callback {
+
+    private boolean isTabletMode;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -13,19 +16,31 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
         setContentView(R.layout.activity_main);
 
         final FragmentManager fm = getSupportFragmentManager();
+
         if (fm.findFragmentByTag(VenueListFragment.TAG) == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new VenueListFragment(), VenueListFragment.TAG)
                     .commit();
         }
+
+        if (findViewById(R.id.container_venue_detail) != null) {
+            isTabletMode = true;
+        }
     }
 
     @Override
     public void onItemSelected(final String pVenueId) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, VenueDetailFragment.newInstance(pVenueId), VenueDetailFragment.TAG)
-                .addToBackStack(null)
-                .commit();
+        if (isTabletMode) {
+            findViewById(R.id.text_no_venue_selected).setVisibility(View.GONE);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_venue_detail, VenueDetailFragment.newInstance(pVenueId, true), VenueDetailFragment.TAG)
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, VenueDetailFragment.newInstance(pVenueId), VenueDetailFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override

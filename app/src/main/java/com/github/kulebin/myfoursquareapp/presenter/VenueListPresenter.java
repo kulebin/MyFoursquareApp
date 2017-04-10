@@ -11,7 +11,7 @@ import java.util.List;
 public class VenueListPresenter implements VenueListContract.Presentation {
 
     private List<VenueDisplayData> mVenueDisplayList;
-    private VenueListContract.View mView;
+    private final VenueListContract.View mView;
     private final VenueListAdapter mVenueListAdapter = new VenueListAdapter(this);
     private OnItemListener mOnItemListener;
 
@@ -23,6 +23,7 @@ public class VenueListPresenter implements VenueListContract.Presentation {
     public void presentVenueToShowData(final List<VenueDisplayData> venueToShowData) {
         this.mVenueDisplayList = venueToShowData;
         mVenueListAdapter.notifyDataSetChanged();
+        mView.restoreListState();
     }
 
     @Override

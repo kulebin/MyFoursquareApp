@@ -6,4 +6,6 @@
     <string name="TITLE_DETAIL_VENUE_DESCRIPTION">Description:</string>
 
     <string name="ERROR_TEXT_NO_VENUE_ID">Due to issue we currently cannot display the Venue\'s details</string>
+
+    <string name="TEXT_NO_VENUE_SELECTED">No venue has been selected yet</string>
 </resources>
