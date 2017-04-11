@@ -8,7 +8,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements VenueListFragment.Callback {
 
-    private boolean isTabletMode;
+    private boolean isTwoPaneMode;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
         }
 
         if (findViewById(R.id.container_venue_detail) != null) {
-            isTabletMode = true;
+            isTwoPaneMode = true;
         }
     }
 
     @Override
     public void onItemSelected(final String pVenueId) {
-        if (isTabletMode) {
+        if (isTwoPaneMode) {
             findViewById(R.id.text_no_venue_selected).setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container_venue_detail, VenueDetailFragment.newInstance(pVenueId, true), VenueDetailFragment.TAG)

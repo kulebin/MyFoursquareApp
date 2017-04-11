@@ -21,7 +21,7 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
 
     public static final String TAG = VenueDetailFragment.class.getSimpleName();
     private static final String VENUE_ID = "venueId";
-    private static final String IS_TABLET_MODE = "isTabletMode";
+    private static final String IS_TWO_PANE_MODE = "isTwoPaneMode";
 
     private final VenueDetailContract.Presentation mPresenter = new VenueDetailPresenter(this);
     @BindView(R.id.image_venue)
@@ -39,7 +39,7 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
         final VenueDetailFragment fragment = new VenueDetailFragment();
         final Bundle args = new Bundle();
         args.putString(VENUE_ID, pVenueId);
-        args.putBoolean(IS_TABLET_MODE, isTabletMode);
+        args.putBoolean(IS_TWO_PANE_MODE, isTabletMode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            if(!getArguments().getBoolean(IS_TABLET_MODE)){
+            if(!getArguments().getBoolean(IS_TWO_PANE_MODE)){
                 final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
                 if (actionBar != null) {
