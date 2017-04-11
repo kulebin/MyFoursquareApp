@@ -23,7 +23,7 @@ public class VenueListPresenter implements VenueListContract.Presentation {
     public void presentVenueToShowData(final List<VenueDisplayData> venueToShowData) {
         this.mVenueDisplayList = venueToShowData;
         mVenueListAdapter.notifyDataSetChanged();
-        mView.restoreListState();
+        mView.retainData(mVenueDisplayList);
     }
 
     @Override
@@ -60,6 +60,12 @@ public class VenueListPresenter implements VenueListContract.Presentation {
     @Override
     public VenueListAdapter getVenueListAdapter() {
         return mVenueListAdapter;
+    }
+
+    @Override
+    public void restoreData(final Object pDataObject) {
+        mVenueDisplayList = (List<VenueDisplayData>) pDataObject;
+        mVenueListAdapter.notifyDataSetChanged();
     }
 
     public void setOnItemListener(final OnItemListener pOnItemListener) {
