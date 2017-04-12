@@ -3,6 +3,7 @@ package com.github.kulebin.myfoursquareapp.util;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+//TODO check Collections.asLifoQueue()
 public class LifoBlockingDeque<E> extends LinkedBlockingDeque<E> {
 
     @Override

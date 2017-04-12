@@ -30,7 +30,7 @@ public interface VenueListContract {
 
         VenueListAdapter getVenueListAdapter();
 
-        <T> void restoreData(T data);
+        void restoreData();
 
     }
 }
