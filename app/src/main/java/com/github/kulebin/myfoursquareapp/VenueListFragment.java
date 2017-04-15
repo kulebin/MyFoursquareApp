@@ -3,7 +3,6 @@ package com.github.kulebin.myfoursquareapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,25 +19,24 @@ public class VenueListFragment extends AbstractBaseFragment implements VenueList
 
     public static final String TAG = VenueListFragment.class.getSimpleName();
     public static final String LIST_STATE_KEY = "LIST_STATE_KEY";
-    private static final String TAG_RETAINED_FRAGMENT = "VenueListRetainedFragment";
 
-    private final VenueListContract.Presentation mListPresenter = new VenueListPresenter(this);
+    private VenueListContract.Presentation mListPresenter;
     private Callback mListener;
-    private RetainedFragment mRetainedFragment;
     private RecyclerView mRecyclerView;
 
     @Override
     public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
-        initRecyclerView(view);
-        initRetainedFragment();
+        setRetainInstance(true);
 
-        if (savedInstanceState != null && mRetainedFragment.getData() != null) {
-            mListPresenter.restoreData(mRetainedFragment.getData());
+        if (savedInstanceState != null && mListPresenter != null) {
+            mListPresenter.restoreData();
             mRecyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(LIST_STATE_KEY));
         } else {
+            mListPresenter = new VenueListPresenter(this);
             mListPresenter.onViewCreated();
         }
 
+        initRecyclerView(view);
         mListPresenter.setOnItemListener(new VenueListContract.Presentation.OnItemListener() {
 
             @Override
@@ -67,17 +65,6 @@ public class VenueListFragment extends AbstractBaseFragment implements VenueList
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if(getActivity().isFinishing()) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .remove(mRetainedFragment)
-                    .commit();
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -90,26 +77,9 @@ public class VenueListFragment extends AbstractBaseFragment implements VenueList
         mListener = null;
     }
 
-    @Override
-    public void retainData(final Object pDataObject) {
-        mRetainedFragment.setData(pDataObject);
-    }
-
     private void initRecyclerView(final View pView) {
         mRecyclerView = (RecyclerView) pView.findViewById(R.id.recycler_view_venue_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mListPresenter.getVenueListAdapter());
-    }
-
-    private void initRetainedFragment() {
-        final FragmentManager fm = getFragmentManager();
-        mRetainedFragment = (RetainedFragment) fm.findFragmentByTag(TAG_RETAINED_FRAGMENT);
-
-        if (mRetainedFragment == null) {
-            mRetainedFragment = new RetainedFragment();
-            fm.beginTransaction()
-                    .add(mRetainedFragment, TAG_RETAINED_FRAGMENT)
-                    .commit();
-        }
     }
 }

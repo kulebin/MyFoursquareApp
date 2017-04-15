@@ -8,7 +8,6 @@ public interface VenueListContract {
 
     interface View extends BaseContract.View {
 
-        <T> void retainData(T data);
     }
 
     interface Presentation extends BaseContract.Presentation {
@@ -30,7 +29,7 @@ public interface VenueListContract {
 
         VenueListAdapter getVenueListAdapter();
 
-        <T> void restoreData(T data);
+        void restoreData();
 
     }
 }

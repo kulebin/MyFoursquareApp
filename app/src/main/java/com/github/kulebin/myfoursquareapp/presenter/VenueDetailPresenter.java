@@ -3,7 +3,6 @@ package com.github.kulebin.myfoursquareapp.presenter;
 import com.github.kulebin.myfoursquareapp.useCase.ShowDetailVenueUseCase;
 import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
 import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
-import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
 public class VenueDetailPresenter implements VenueDetailContract.Presentation {
 
