@@ -4,17 +4,21 @@ import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
 import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
-import com.github.kulebin.myfoursquareapp.view.VenueListContract;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowVenueListUseCase {
 
-    private final VenueListContract.Presentation mPresenter;
+    public interface IRecipient extends OnInteractionCallback {
 
-    public ShowVenueListUseCase(final VenueListContract.Presentation pPresenter) {
-        mPresenter = pPresenter;
+        void presentVenueToShowData(List<VenueDisplayData> venueToShowData);
+    }
+
+    private final IRecipient mRecipient;
+
+    public ShowVenueListUseCase(final IRecipient pRecipient) {
+        mRecipient = pRecipient;
     }
 
     public void showVenueList() {
@@ -23,27 +27,23 @@ public class ShowVenueListUseCase {
 
             @Override
             public void onStart() {
-                mPresenter.setProgress(true);
+                mRecipient.onStart();
             }
 
             @Override
             public void onSuccess(final List<Venue> pVenueList) {
-                mPresenter.setProgress(false);
-                if (pVenueList != null) {
-                    final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
+                final List<VenueDisplayData> venueToShowList = new ArrayList<>(pVenueList.size());
 
-                    for (final Venue venue : pVenueList) {
-                        venueToShowList.add(new VenueDisplayData(venue));
-                    }
-
-                    mPresenter.presentVenueToShowData(venueToShowList);
+                for (final Venue venue : pVenueList) {
+                    venueToShowList.add(new VenueDisplayData(venue));
                 }
+
+                mRecipient.presentVenueToShowData(venueToShowList);
             }
 
             @Override
             public void onError(final Exception e) {
-                mPresenter.setProgress(false);
-                mPresenter.onError(e);
+                mRecipient.onError(e);
             }
         });
     }

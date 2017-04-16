@@ -1,4 +1,4 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
-import com.github.kulebin.myfoursquareapp.view.VenueListContract;
+import com.github.kulebin.myfoursquareapp.AbstractBaseFragment;
+import com.github.kulebin.myfoursquareapp.R;
 
 public class VenueListFragment extends AbstractBaseFragment implements VenueListContract.View {
 

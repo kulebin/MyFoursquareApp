@@ -1,4 +1,4 @@
-package com.github.kulebin.myfoursquareapp;
+package com.github.kulebin.myfoursquareapp.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,10 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.kulebin.myfoursquareapp.AbstractBaseFragment;
+import com.github.kulebin.myfoursquareapp.R;
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
-import com.github.kulebin.myfoursquareapp.presenter.VenueDetailPresenter;
-import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
-import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +52,7 @@ public class VenueDetailFragment extends AbstractBaseFragment implements VenueDe
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            if(!getArguments().getBoolean(IS_TWO_PANE_MODE)){
+            if (!getArguments().getBoolean(IS_TWO_PANE_MODE)) {
                 final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
                 if (actionBar != null) {

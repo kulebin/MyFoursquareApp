@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.kulebin.myfoursquareapp.view.VenueDetailFragment;
+import com.github.kulebin.myfoursquareapp.view.VenueListFragment;
+
 public class MainActivity extends AppCompatActivity implements VenueListFragment.Callback {
 
     private boolean isTwoPaneMode;

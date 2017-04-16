@@ -11,9 +11,9 @@ import com.github.kulebin.myfoursquareapp.R;
 import com.github.kulebin.myfoursquareapp.app.ContextHolder;
 import com.github.kulebin.myfoursquareapp.imageLoader.DisplayOptions;
 import com.github.kulebin.myfoursquareapp.imageLoader.IImageLoader;
-import com.github.kulebin.myfoursquareapp.presenter.VenueListPresenter;
 import com.github.kulebin.myfoursquareapp.view.VenueItemView;
 import com.github.kulebin.myfoursquareapp.view.VenueListContract;
+import com.github.kulebin.myfoursquareapp.view.VenueListPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
