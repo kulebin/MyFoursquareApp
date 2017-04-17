@@ -1,17 +1,14 @@
-package com.github.kulebin.myfoursquareapp.presenter;
+package com.github.kulebin.myfoursquareapp.view;
 
 import com.github.kulebin.myfoursquareapp.adapter.VenueListAdapter;
 import com.github.kulebin.myfoursquareapp.useCase.ShowVenueListUseCase;
-import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
-import com.github.kulebin.myfoursquareapp.view.VenueItemView;
-import com.github.kulebin.myfoursquareapp.view.VenueListContract;
 
 import java.util.List;
 
-public class VenueListPresenter implements VenueListContract.Presentation {
+public class VenueListPresenter implements VenueListContract.Presentation, ShowVenueListUseCase.IRecipient {
 
     private List<VenueDisplayData> mVenueDisplayList;
-    private VenueListContract.View mView;
+    private final VenueListContract.View mView;
     private final VenueListAdapter mVenueListAdapter = new VenueListAdapter(this);
     private OnItemListener mOnItemListener;
 
@@ -22,6 +19,7 @@ public class VenueListPresenter implements VenueListContract.Presentation {
     @Override
     public void presentVenueToShowData(final List<VenueDisplayData> venueToShowData) {
         this.mVenueDisplayList = venueToShowData;
+        mView.showProgress(false);
         mVenueListAdapter.notifyDataSetChanged();
     }
 
@@ -47,18 +45,24 @@ public class VenueListPresenter implements VenueListContract.Presentation {
     }
 
     @Override
-    public void onError(final Exception e) {
-        mView.showError(e.getMessage());
+    public void onStart() {
+        mView.showProgress(true);
     }
 
     @Override
-    public void setProgress(final boolean isVisible) {
-        mView.showProgress(isVisible);
+    public void onError(final Exception e) {
+        mView.showProgress(false);
+        mView.showError(e.getMessage());
     }
 
     @Override
     public VenueListAdapter getVenueListAdapter() {
         return mVenueListAdapter;
+    }
+
+    @Override
+    public void restoreData() {
+        mVenueListAdapter.notifyDataSetChanged();
     }
 
     public void setOnItemListener(final OnItemListener pOnItemListener) {

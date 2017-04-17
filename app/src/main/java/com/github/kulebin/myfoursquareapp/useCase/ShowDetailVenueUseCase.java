@@ -4,14 +4,18 @@ import com.github.kulebin.myfoursquareapp.dataSource.IDataSource;
 import com.github.kulebin.myfoursquareapp.dataSource.IOnResultCallback;
 import com.github.kulebin.myfoursquareapp.model.Venue;
 import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
-import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
 
 public class ShowDetailVenueUseCase {
 
-    private final VenueDetailContract.Presentation mPresenter;
+    public interface IRecipient extends OnInteractionCallback {
 
-    public ShowDetailVenueUseCase(final VenueDetailContract.Presentation pPresenter) {
-        mPresenter = pPresenter;
+        void presentVenueToShowData(CompleteVenueDisplayData venueToShowData);
+    }
+
+    private final IRecipient mRecipient;
+
+    public ShowDetailVenueUseCase(final IRecipient pRecipient) {
+        mRecipient = pRecipient;
     }
 
     public void showDetailVenue(final String pVenueId) {
@@ -20,19 +24,17 @@ public class ShowDetailVenueUseCase {
 
             @Override
             public void onStart() {
-                mPresenter.setProgress(true);
+                mRecipient.onStart();
             }
 
             @Override
             public void onSuccess(final Venue venue) {
-                mPresenter.setProgress(false);
-                mPresenter.presentVenueToShowData(new CompleteVenueDisplayData(venue));
+                mRecipient.presentVenueToShowData(new CompleteVenueDisplayData(venue));
             }
 
             @Override
             public void onError(final Exception e) {
-                mPresenter.setProgress(false);
-                mPresenter.onError(e);
+                mRecipient.onError(e);
             }
         });
     }

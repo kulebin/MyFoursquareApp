@@ -2,22 +2,18 @@ package com.github.kulebin.myfoursquareapp.view;
 
 import com.github.kulebin.myfoursquareapp.adapter.VenueListAdapter;
 
-import java.util.List;
-
 public interface VenueListContract {
 
     interface View extends BaseContract.View {
 
     }
 
-    interface Presentation extends BaseContract.Presentation {
+    interface Presentation {
 
         interface OnItemListener {
 
             void onClick(String venueId);
         }
-
-        void presentVenueToShowData(List<VenueDisplayData> venueToShowData);
 
         int getCount();
 
@@ -28,6 +24,8 @@ public interface VenueListContract {
         void setOnItemListener(OnItemListener itemListener);
 
         VenueListAdapter getVenueListAdapter();
+
+        void restoreData();
 
     }
 }

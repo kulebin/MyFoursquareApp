@@ -9,13 +9,4 @@ public interface BaseContract {
         void showError(String message);
 
     }
-
-    interface Presentation {
-
-        void onError(Exception e);
-
-        void setProgress(boolean isVisible);
-
-    }
-
 }

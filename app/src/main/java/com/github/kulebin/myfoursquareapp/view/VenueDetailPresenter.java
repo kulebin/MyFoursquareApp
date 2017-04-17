@@ -1,11 +1,8 @@
-package com.github.kulebin.myfoursquareapp.presenter;
+package com.github.kulebin.myfoursquareapp.view;
 
 import com.github.kulebin.myfoursquareapp.useCase.ShowDetailVenueUseCase;
-import com.github.kulebin.myfoursquareapp.view.CompleteVenueDisplayData;
-import com.github.kulebin.myfoursquareapp.view.VenueDetailContract;
-import com.github.kulebin.myfoursquareapp.view.VenueDisplayData;
 
-public class VenueDetailPresenter implements VenueDetailContract.Presentation {
+public class VenueDetailPresenter implements VenueDetailContract.Presentation, ShowDetailVenueUseCase.IRecipient {
 
     private final VenueDetailContract.View mView;
 
@@ -15,17 +12,19 @@ public class VenueDetailPresenter implements VenueDetailContract.Presentation {
 
     @Override
     public void presentVenueToShowData(final CompleteVenueDisplayData pVenueToShowData) {
+        mView.showProgress(false);
         mView.displayData(pVenueToShowData);
     }
 
     @Override
-    public void onError(final Exception e) {
-        mView.showError(e.getMessage());
+    public void onStart() {
+        mView.showProgress(true);
     }
 
     @Override
-    public void setProgress(final boolean isVisible) {
-        mView.showProgress(isVisible);
+    public void onError(final Exception e) {
+        mView.showProgress(false);
+        mView.showError(e.getMessage());
     }
 
     @Override
