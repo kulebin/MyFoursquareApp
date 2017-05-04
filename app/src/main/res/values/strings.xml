@@ -8,4 +8,11 @@
     <string name="ERROR_TEXT_NO_VENUE_ID">Due to issue we currently cannot display the Venue\'s details</string>
 
     <string name="TEXT_NO_VENUE_SELECTED">No venue has been selected yet</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="MENU_NAV_VENUE_LIST">Venues</string>
+    <string name="MENU_NAV_MAP">Map</string>
 </resources>
