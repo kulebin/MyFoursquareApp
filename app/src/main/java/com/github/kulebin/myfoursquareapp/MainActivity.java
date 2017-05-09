@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
         public void onBackStackChanged() {
             if (!isTwoPaneMode && getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                isDrawerEnabled(true);
+                setDrawerState(true);
             }
 
         }
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
                     .addToBackStack(null)
                     .commit();
 
-            isDrawerEnabled(false);
+            setDrawerState(false);
         }
     }
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
         mToggle.syncState();
     }
 
-    private void isDrawerEnabled(final boolean isEnabled) {
+    private void setDrawerState(final boolean isEnabled) {
         if (isEnabled) {
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             mToggle.setDrawerIndicatorEnabled(true);
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
                     public void onClick(final View v) {
                         getSupportFragmentManager().popBackStack();
                         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                        isDrawerEnabled(true);
+                        setDrawerState(true);
                     }
                 });
             }
