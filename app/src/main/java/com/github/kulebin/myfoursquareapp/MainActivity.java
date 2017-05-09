@@ -20,6 +20,17 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
     private boolean isTwoPaneMode;
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawer;
+    private FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+
+        @Override
+        public void onBackStackChanged() {
+            if (!isTwoPaneMode && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                isDrawerEnabled(true);
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -29,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
         initNavigationMenu();
 
         final FragmentManager fm = getSupportFragmentManager();
+        fm.addOnBackStackChangedListener(mOnBackStackChangedListener);
 
         if (fm.findFragmentByTag(VenueListFragment.TAG) == null) {
             getSupportFragmentManager().beginTransaction()
@@ -67,11 +79,6 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
 
     @Override
     public void onBackPressed() {
-        if (!isTwoPaneMode) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            isDrawerEnabled(true);
-        }
-
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
         } else {
@@ -103,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements VenueListFragment
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             mToggle.setDrawerIndicatorEnabled(true);
             mToggle.syncState();
-
         } else {
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             mToggle.setDrawerIndicatorEnabled(false);
